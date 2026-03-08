@@ -1,6 +1,7 @@
 import { FAQSchema } from "@/components/FAQSchema";
 import { RelatedTools } from "@/components/RelatedTools";
 import { SEOArticle } from "@/components/SEOArticle";
+import { ToolSchema } from "@/components/ToolSchema";
 import { ToolDefinition } from "@/lib/types";
 
 export function ToolLayout({
@@ -22,6 +23,7 @@ export function ToolLayout({
         {children}
         <SEOArticle tool={tool} />
         <RelatedTools relatedSlugs={tool.relatedToolSlugs} />
+        <ToolSchema tool={tool} />
         <FAQSchema faqs={tool.seoContent.faqs} />
       </div>
     </div>

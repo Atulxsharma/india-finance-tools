@@ -1,4 +1,5 @@
 export type ToolCategory = "Finance" | "Tax";
+export type ToolSchemaType = "calculator" | "generator" | "converter";
 
 export type FaqItem = {
   question: string;
@@ -21,6 +22,7 @@ export type ToolDefinition = {
   slug: string;
   name: string;
   category: ToolCategory;
+  schemaType: ToolSchemaType;
   targetKeyword: string;
   description: string;
   primaryPromise: string;

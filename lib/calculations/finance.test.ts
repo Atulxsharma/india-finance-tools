@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { calculateEMI, calculateGST, calculateSIP } from "@/lib/calculations/finance";
+import {
+  calculateEMI,
+  calculateFD,
+  calculateGST,
+  calculateGratuity,
+  calculatePPF,
+  calculateSIP,
+} from "@/lib/calculations/finance";
 
 describe("calculateGST", () => {
   it("adds GST on a base amount", () => {
@@ -93,5 +100,53 @@ describe("calculateSIP", () => {
 
     expect(result.futureValue).toBe(120_000);
     expect(result.wealthGained).toBe(0);
+  });
+});
+
+describe("calculatePPF", () => {
+  it("separates contributions from interest and returns extension scenarios", () => {
+    const result = calculatePPF({
+      contributionAmount: 12_000,
+      contributionFrequency: "monthly",
+      annualRate: 7.1,
+      years: 15,
+    });
+
+    expect(result.totalInvested).toBe(2_160_000);
+    expect(result.maturityValue).toBeGreaterThan(result.totalInvested);
+    expect(result.scenarios).toHaveLength(3);
+    expect(result.scenarios[2].maturityValue).toBeGreaterThan(result.scenarios[0].maturityValue);
+  });
+});
+
+describe("calculateFD", () => {
+  it("calculates maturity and post-tax values", () => {
+    const result = calculateFD({
+      principal: 500_000,
+      annualRate: 7.5,
+      years: 5,
+      compoundingFrequency: 4,
+      taxRate: 30,
+    });
+
+    expect(result.maturityValue).toBeGreaterThan(500_000);
+    expect(result.postTaxValue).toBeLessThan(result.maturityValue);
+    expect(result.postTaxInterest).toBeLessThan(result.interestEarned);
+  });
+});
+
+describe("calculateGratuity", () => {
+  it("checks eligibility and applies the act-covered rounding rule", () => {
+    const result = calculateGratuity({
+      lastDrawnSalary: 60_000,
+      yearsOfService: 4,
+      extraMonths: 7,
+      formula: "act-covered",
+    });
+
+    expect(result.eligible).toBe(false);
+    expect(result.monthsUntilEligible).toBe(5);
+    expect(result.serviceYearsUsed).toBe(5);
+    expect(result.gratuity).toBeGreaterThan(0);
   });
 });

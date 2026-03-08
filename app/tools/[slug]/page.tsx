@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 import { AdUnit } from "@/components/AdUnit";
 import { ToolLayout } from "@/components/ToolLayout";
 import { EmiCalculator } from "@/components/tools/EmiCalculator";
+import { FdCalculator } from "@/components/tools/FdCalculator";
 import { GstCalculator } from "@/components/tools/GstCalculator";
+import { GratuityCalculator } from "@/components/tools/GratuityCalculator";
 import { IncomeTaxCalculator } from "@/components/tools/IncomeTaxCalculator";
+import { PpfCalculator } from "@/components/tools/PpfCalculator";
 import { SalaryCalculator } from "@/components/tools/SalaryCalculator";
 import { SipCalculator } from "@/components/tools/SipCalculator";
 import { siteConfig } from "@/lib/site";
@@ -16,6 +19,9 @@ const toolComponents = {
   "emi-calculator": EmiCalculator,
   "sip-calculator": SipCalculator,
   "income-tax-calculator": IncomeTaxCalculator,
+  "ppf-calculator": PpfCalculator,
+  "fd-calculator": FdCalculator,
+  "gratuity-calculator": GratuityCalculator,
 } as const;
 
 type ToolPageParams = {

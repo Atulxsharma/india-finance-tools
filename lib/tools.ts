@@ -5,6 +5,7 @@ export const toolDefinitions: ToolDefinition[] = [
     slug: "salary-calculator",
     name: "Take-Home Salary Calculator",
     category: "Finance",
+    schemaType: "calculator",
     targetKeyword: "take home salary calculator india",
     description:
       "Estimate monthly take-home salary with old vs new regime comparison, HRA handling, PF, and professional tax.",
@@ -61,6 +62,7 @@ export const toolDefinitions: ToolDefinition[] = [
     slug: "gst-calculator",
     name: "GST Calculator",
     category: "Tax",
+    schemaType: "calculator",
     targetKeyword: "gst calculator",
     description:
       "Add or remove GST in seconds, switch slabs, and see CGST/SGST or IGST splits clearly.",
@@ -113,6 +115,7 @@ export const toolDefinitions: ToolDefinition[] = [
     slug: "emi-calculator",
     name: "EMI Calculator",
     category: "Finance",
+    schemaType: "calculator",
     targetKeyword: "emi calculator",
     description:
       "Plan monthly loan payments with EMI, total interest, total payout, and amortization snapshots.",
@@ -165,6 +168,7 @@ export const toolDefinitions: ToolDefinition[] = [
     slug: "sip-calculator",
     name: "SIP Calculator",
     category: "Finance",
+    schemaType: "calculator",
     targetKeyword: "sip calculator",
     description:
       "Estimate SIP corpus growth with monthly investment, expected return, total invested amount, and wealth gained.",
@@ -217,6 +221,7 @@ export const toolDefinitions: ToolDefinition[] = [
     slug: "income-tax-calculator",
     name: "Income Tax Calculator",
     category: "Tax",
+    schemaType: "calculator",
     targetKeyword: "income tax calculator india",
     description:
       "Compare old vs new regime tax outcomes across financial years with visible deductions, rebates, and take-home impact.",
@@ -265,6 +270,165 @@ export const toolDefinitions: ToolDefinition[] = [
           question: "Is this suitable for final tax filing?",
           answer:
             "Use it as a planning estimate. Final filing should always be matched against official guidance, Form 16, AIS, and your actual deduction proofs.",
+        },
+      ],
+    },
+  },
+  {
+    slug: "ppf-calculator",
+    name: "PPF Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "ppf calculator",
+    description:
+      "Estimate PPF maturity value, total contributions, extension scenarios, and long-term tax-free growth.",
+    primaryPromise:
+      "Enter your PPF contribution to estimate maturity value, total invested amount, and interest earned.",
+    relatedToolSlugs: ["fd-calculator", "gratuity-calculator", "sip-calculator"],
+    seoContent: {
+      title: "PPF Calculator",
+      metaDescription:
+        "Use a PPF calculator for India to estimate maturity value, total investment, extension scenarios, and tax-free interest growth.",
+      keywords: ["ppf calculator", "public provident fund calculator", "ppf maturity calculator"],
+      h1: "PPF Calculator",
+      articleHeading: "What this PPF calculator helps you estimate",
+      coverage: [
+        "Monthly or yearly contribution estimates",
+        "15-year maturity planning with extension scenarios",
+        "Total invested amount versus interest earned",
+      ],
+      intro: [
+        "A PPF calculator is most useful when it does more than show one maturity number. Long-term savings decisions depend on how much you contribute, how long you stay invested, and whether you extend the account after the initial 15-year term.",
+        "This calculator helps you estimate the maturity value of a Public Provident Fund contribution pattern using a fixed annual rate assumption. It also separates your own contribution from the interest built over time, which makes the outcome easier to understand.",
+        "Use it for long-term tax-saving planning, retirement accumulation checks, or to compare PPF with other low-risk savings options like fixed deposits.",
+      ],
+      howTo: [
+        "Choose whether you want to think in monthly or yearly contributions.",
+        "Enter the amount, the expected annual PPF rate, and the investment period.",
+        "Check the maturity value first, then compare total invested amount and interest earned.",
+        "Use the comparison section to see how extension beyond 15 years changes the result.",
+      ],
+      faqs: [
+        {
+          question: "Does this calculator use the current PPF rate automatically?",
+          answer:
+            "No. You can enter the rate you want to model. PPF rates are reviewed periodically by the government, so always confirm the current notified rate.",
+        },
+        {
+          question: "Can I use this for the standard 15-year PPF period?",
+          answer:
+            "Yes. The calculator is designed around the standard PPF tenure and also shows longer extension scenarios for comparison.",
+        },
+        {
+          question: "Is the maturity amount guaranteed?",
+          answer:
+            "The estimate depends on the contribution pattern and the rate you enter. Actual credited interest follows the government-notified PPF rate for each period.",
+        },
+      ],
+    },
+  },
+  {
+    slug: "fd-calculator",
+    name: "FD Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "fd calculator",
+    description:
+      "Estimate FD maturity amount with compounding choice, total interest earned, and a quick post-tax view.",
+    primaryPromise:
+      "Enter your deposit, rate, and period to see FD maturity amount, interest earned, and a post-tax estimate.",
+    relatedToolSlugs: ["ppf-calculator", "sip-calculator", "income-tax-calculator"],
+    seoContent: {
+      title: "FD Calculator",
+      metaDescription:
+        "Calculate fixed deposit maturity value using amount, annual rate, tenure, and compounding frequency. See interest and post-tax estimates.",
+      keywords: ["fd calculator", "fixed deposit calculator", "fd interest calculator"],
+      h1: "FD Calculator",
+      articleHeading: "How to read an FD maturity estimate",
+      coverage: [
+        "Fixed deposit maturity estimate from amount, rate, and tenure",
+        "Quarterly, monthly, half-yearly, and yearly compounding",
+        "Pre-tax versus post-tax return view",
+      ],
+      intro: [
+        "An FD calculator should help you understand not just the maturity value but also how much of the final amount comes from interest, how compounding frequency affects the result, and how taxation can reduce the effective return.",
+        "This calculator uses a standard compound-interest approach so you can test common fixed deposit scenarios quickly. That makes it useful for comparing tenure choices or checking whether an FD still fits your savings goal.",
+        "Use the post-tax estimate as a planning shortcut only. Actual tax treatment depends on your slab, interest thresholds, and whether TDS applies.",
+      ],
+      howTo: [
+        "Enter the deposit amount, annual interest rate, and the FD period.",
+        "Choose the compounding frequency used by the bank or the scenario you want to compare.",
+        "Check the maturity amount and total interest earned.",
+        "Open the details to see the post-tax estimate if you want a more realistic net-return view.",
+      ],
+      faqs: [
+        {
+          question: "Does this calculator include TDS automatically?",
+          answer:
+            "No. It shows a simple post-tax estimate based on the tax rate you enter, but actual TDS treatment depends on threshold rules and your bank records.",
+        },
+        {
+          question: "Why does compounding frequency matter?",
+          answer:
+            "More frequent compounding credits interest into the base amount sooner, which can increase the final maturity value slightly.",
+        },
+        {
+          question: "Can I compare FD with PPF using this?",
+          answer:
+            "Yes. The related tools section links directly to the PPF calculator so you can compare low-risk savings options more easily.",
+        },
+      ],
+    },
+  },
+  {
+    slug: "gratuity-calculator",
+    name: "Gratuity Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "gratuity calculator",
+    description:
+      "Estimate gratuity using Act-covered and non-Act formulas, eligibility checks, and tax-exemption context.",
+    primaryPromise:
+      "Enter last drawn salary and years of service to estimate gratuity and check whether you are eligible yet.",
+    relatedToolSlugs: ["salary-calculator", "ppf-calculator", "income-tax-calculator"],
+    seoContent: {
+      title: "Gratuity Calculator",
+      metaDescription:
+        "Use a gratuity calculator to estimate gratuity for Indian employees under Act-covered and non-Act formulas, with eligibility checks.",
+      keywords: ["gratuity calculator", "gratuity calculation", "employee gratuity calculator"],
+      h1: "Gratuity Calculator",
+      articleHeading: "What this gratuity calculator covers",
+      coverage: [
+        "Act-covered and non-Act gratuity formulas",
+        "Eligibility checks based on years of service",
+        "Tax-exemption context for planning",
+      ],
+      intro: [
+        "A gratuity estimate is most useful when it explains which formula is being applied and whether the employee is even eligible yet. Many users know their tenure and salary but are not sure how the 5-year rule and formula differences affect the final number.",
+        "This calculator covers both the Payment of Gratuity Act formula and a simpler non-Act estimate. It also makes the eligibility status visible so the output is not misleading.",
+        "Use it as a planning tool when evaluating resignation timing, retirement benefits, or long-term compensation value.",
+      ],
+      howTo: [
+        "Enter your last drawn basic salary plus dearness allowance if applicable.",
+        "Add completed years of service and extra months if you want the eligibility check to be more precise.",
+        "Choose whether you want the Act-covered or non-Act formula.",
+        "Check the gratuity estimate, eligibility status, and explanatory notes before relying on it.",
+      ],
+      faqs: [
+        {
+          question: "Do I need 5 years of service for gratuity?",
+          answer:
+            "In many common cases, yes. This calculator highlights whether you have crossed the standard eligibility threshold based on the service length entered.",
+        },
+        {
+          question: "Why are there two gratuity formulas?",
+          answer:
+            "Act-covered and non-Act gratuity estimates use different divisors. The calculator lets you switch so you can see the difference clearly.",
+        },
+        {
+          question: "Is this enough for final payroll settlement?",
+          answer:
+            "No. Final gratuity settlement should always be matched with your employer policy and applicable legal rules.",
         },
       ],
     },

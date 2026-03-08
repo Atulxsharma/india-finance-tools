@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { toolDefinitions } from "@/lib/tools";
+import { toolDefinitions, toolDefinitionsByCategory } from "@/lib/tools";
 
 export const metadata: Metadata = {
   title: "Free Online Tax and Finance Calculators for India",
   description:
-    "Use free online India finance calculators for salary, income tax, EMI, SIP, and GST. Fast on mobile, transparent about assumptions, and built for quick checks.",
+    "Use free online India finance calculators for salary, income tax, EMI, SIP, GST, PPF, FD, and gratuity. Fast on mobile, transparent about assumptions, and built for quick checks.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Free Online Tax and Finance Calculators for India | India Tools",
     description:
-      "Use free online India finance calculators for salary, income tax, EMI, SIP, and GST. Fast on mobile, transparent about assumptions, and built for quick checks.",
+      "Use free online India finance calculators for salary, income tax, EMI, SIP, GST, PPF, FD, and gratuity. Fast on mobile, transparent about assumptions, and built for quick checks.",
     url: "/",
     type: "website",
   },
@@ -115,6 +115,28 @@ export default function Home() {
             Add or remove GST calculator
           </Link>
         </div>
+      </section>
+
+      <section className="directory-section">
+        <div className="section-heading">
+          <h2>All calculators</h2>
+          <p className="muted">Browse the full tool library by category.</p>
+        </div>
+
+        {toolDefinitionsByCategory.map(([category, tools]) => (
+          <div className="content-card" key={category}>
+            <div className="section-heading">
+              <h3>{category}</h3>
+            </div>
+            <div className="related-links">
+              {tools.map((tool) => (
+                <Link className="text-link related-link" href={`/tools/${tool.slug}`} key={tool.slug}>
+                  {tool.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
     </div>
   );
