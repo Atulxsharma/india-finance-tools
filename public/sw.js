@@ -1,5 +1,5 @@
-const CACHE_NAME = "india-tools-shell-v1";
-const RUNTIME_CACHE = "india-tools-runtime-v1";
+const CACHE_NAME = "india-tools-shell-v2";
+const RUNTIME_CACHE = "india-tools-runtime-v2";
 const APP_SHELL = [
   "/",
   "/tools/salary-calculator",
@@ -7,6 +7,9 @@ const APP_SHELL = [
   "/tools/emi-calculator",
   "/tools/sip-calculator",
   "/tools/income-tax-calculator",
+  "/tools/ppf-calculator",
+  "/tools/fd-calculator",
+  "/tools/gratuity-calculator",
   "/manifest.webmanifest",
   "/icons/192",
   "/icons/512",

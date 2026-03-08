@@ -1,18 +1,34 @@
 import Link from "next/link";
+import { toolDefinitions } from "@/lib/tools";
 
 export function Header() {
+  const featuredTools = [
+    "salary-calculator",
+    "income-tax-calculator",
+    "gst-calculator",
+    "emi-calculator",
+    "sip-calculator",
+    "ppf-calculator",
+    "fd-calculator",
+  ]
+    .map((slug) => toolDefinitions.find((tool) => tool.slug === slug))
+    .filter((tool) => tool !== undefined);
+
   return (
     <header className="site-header">
       <Link className="brand" href="/">
         <span className="brand-mark">India Tools</span>
-        <span className="brand-name">Salary, tax, EMI, SIP, GST</span>
+        <span className="brand-name">Salary, tax, EMI, SIP, PPF, FD</span>
       </Link>
       <nav className="site-nav" aria-label="Primary">
-        <Link href="/tools/salary-calculator">Salary</Link>
-        <Link href="/tools/gst-calculator">GST</Link>
-        <Link href="/tools/emi-calculator">EMI</Link>
-        <Link href="/tools/sip-calculator">SIP</Link>
-        <Link href="/tools/income-tax-calculator">Income tax</Link>
+        {featuredTools.map((tool) => (
+          <Link href={`/tools/${tool.slug}`} key={tool.slug}>
+            {tool.name
+              .replace(" Calculator", "")
+              .replace("Take-Home ", "")
+              .replace("Income Tax", "Tax")}
+          </Link>
+        ))}
       </nav>
     </header>
   );

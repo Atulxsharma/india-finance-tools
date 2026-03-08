@@ -25,6 +25,9 @@ export default function Home() {
     "emi-calculator",
     "sip-calculator",
     "gst-calculator",
+    "ppf-calculator",
+    "fd-calculator",
+    "gratuity-calculator",
   ]
     .map((slug) => toolDefinitions.find((tool) => tool.slug === slug))
     .filter((tool) => tool !== undefined);
@@ -36,7 +39,7 @@ export default function Home() {
         <h1>Free online tax and finance calculators for India.</h1>
         <p className="hero-text">
           Check take-home salary, compare tax regimes, estimate EMI, project SIP growth,
-          and calculate GST without fighting cluttered pages.
+          calculate GST, and plan PPF, FD, or gratuity without fighting cluttered pages.
         </p>
         <div className="hero-actions">
           <Link className="button button-primary" href="/tools/salary-calculator">
@@ -113,6 +116,15 @@ export default function Home() {
           </Link>
           <Link className="text-link related-link" href="/tools/gst-calculator">
             Add or remove GST calculator
+          </Link>
+          <Link className="text-link related-link" href="/tools/ppf-calculator">
+            PPF maturity calculator
+          </Link>
+          <Link className="text-link related-link" href="/tools/fd-calculator">
+            Fixed deposit calculator
+          </Link>
+          <Link className="text-link related-link" href="/tools/gratuity-calculator">
+            Gratuity amount calculator
           </Link>
         </div>
       </section>
