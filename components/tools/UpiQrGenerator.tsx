@@ -9,6 +9,7 @@ import {
   InlinePreviewCard,
   NumberField,
   PrimaryResultCard,
+  StatCard,
   TextAreaField,
   TextField,
 } from "@/components/tools/shared";
@@ -48,6 +49,7 @@ export function UpiQrGenerator() {
   const [amount, setAmount] = useState(499);
   const [note, setNote] = useState("Payment");
   const [qrDataUrl, setQrDataUrl] = useState("");
+  const [copied, setCopied] = useState(false);
   const paymentUri = useMemo(
     () => buildUpiUri({ payeeName, upiId, amount, note }),
     [amount, note, payeeName, upiId],
@@ -76,17 +78,41 @@ export function UpiQrGenerator() {
       </section>
 
       <PrimaryResultCard
-        caption={paymentUri}
+        caption={amount > 0 ? `Fixed amount: ₹${amount.toFixed(2)}` : "Open amount QR"}
         highlights={[
           { label: "Payee", value: payeeName },
           { label: "UPI ID", value: upiId },
         ]}
-        label="UPI payment URI"
-        value={paymentUri}
+        label="UPI QR ready"
+        value={amount > 0 ? `₹${amount.toFixed(2)}` : "Scan to pay"}
       />
 
       <InlinePreviewCard subtitle="Preview and download the QR code as a PNG image." title="QR preview">
         {qrDataUrl ? <img alt="UPI QR code" src={qrDataUrl} style={{ maxWidth: 260, width: "100%" }} /> : null}
+        <div className="result-grid">
+          <StatCard label="Payee" value={payeeName} />
+          <StatCard label="UPI ID" value={upiId} />
+          <StatCard label="Note" value={note || "None"} />
+        </div>
+        <div className="uri-box">
+          <div className="section-heading">
+            <h3>UPI payment link</h3>
+            <p className="muted uri-text">{paymentUri}</p>
+          </div>
+          <div className="hero-actions">
+            <button
+              className="button button-secondary"
+              type="button"
+              onClick={async () => {
+                await navigator.clipboard.writeText(paymentUri);
+                setCopied(true);
+                window.setTimeout(() => setCopied(false), 1500);
+              }}
+            >
+              {copied ? "Copied" : "Copy link"}
+            </button>
+          </div>
+        </div>
         <DownloadButton
           disabled={!qrDataUrl}
           label="Download QR PNG"
