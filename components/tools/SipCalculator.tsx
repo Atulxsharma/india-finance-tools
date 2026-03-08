@@ -6,7 +6,9 @@ import { formatRupees } from "@/lib/format";
 import {
   AssumptionPanel,
   BreakdownTable,
+  CollapsibleSection,
   DistributionBar,
+  FieldHint,
   NumberField,
   PrimaryResultCard,
   QuickPicks,
@@ -23,6 +25,11 @@ export function SipCalculator() {
 
   return (
     <div className="tool-panel card">
+      <FieldHint
+        title="Quick SIP estimate"
+        text="Enter monthly SIP, return, and years to see the projected corpus. Use the breakdown only if you want milestone detail."
+      />
+
       <div className="field-grid">
         <NumberField
           id="sip-investment"
@@ -112,24 +119,29 @@ export function SipCalculator() {
         />
       </div>
 
-      <div className="detail-grid">
-        <BreakdownTable
-          title="SIP summary"
-          rows={[
-            { label: "Monthly investment", value: input.monthlyInvestment },
-            { label: "Total invested", value: result.totalInvested },
-            { label: "Estimated value", value: result.futureValue, highlight: true },
-            { label: "Wealth gained", value: result.wealthGained },
-          ]}
-        />
-        <DistributionBar
-          title="Invested vs growth"
-          segments={[
-            { label: "Invested", value: result.totalInvested, color: "#0f5cc0" },
-            { label: "Growth", value: result.wealthGained, color: "#0d9f6e" },
-          ]}
-        />
-      </div>
+      <CollapsibleSection
+        title="See corpus breakdown"
+        subtitle="Invested amount, gains, and milestone view"
+      >
+        <div className="detail-grid">
+          <BreakdownTable
+            title="SIP summary"
+            rows={[
+              { label: "Monthly investment", value: input.monthlyInvestment },
+              { label: "Total invested", value: result.totalInvested },
+              { label: "Estimated value", value: result.futureValue, highlight: true },
+              { label: "Wealth gained", value: result.wealthGained },
+            ]}
+          />
+          <DistributionBar
+            title="Invested vs growth"
+            segments={[
+              { label: "Invested", value: result.totalInvested, color: "#0f5cc0" },
+              { label: "Growth", value: result.wealthGained, color: "#0d9f6e" },
+            ]}
+          />
+        </div>
+      </CollapsibleSection>
 
       <AssumptionPanel assumptions={result.assumptions} notes={result.notes} />
     </div>

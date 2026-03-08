@@ -6,7 +6,9 @@ import { formatRupees } from "@/lib/format";
 import {
   AssumptionPanel,
   BreakdownTable,
+  CollapsibleSection,
   DistributionBar,
+  FieldHint,
   NumberField,
   PrimaryResultCard,
   QuickPicks,
@@ -25,6 +27,11 @@ export function EmiCalculator() {
 
   return (
     <div className="tool-panel card">
+      <FieldHint
+        title="Quick EMI check"
+        text="Enter loan amount, rate, and tenure to get the monthly EMI first. Open the breakdown only if you want total cost details."
+      />
+
       <div className="field-grid">
         <NumberField
           id="emi-principal"
@@ -121,31 +128,37 @@ export function EmiCalculator() {
         />
       </div>
 
-      <div className="detail-grid">
-        <BreakdownTable
-          title="Amortization snapshot"
-          rows={[
-            { label: "Month 1 principal", value: result.schedule[0]?.principal ?? 0 },
-            { label: "Month 1 interest", value: result.schedule[0]?.interest ?? 0 },
-            {
-              label: "Mid-loan balance",
-              value: result.schedule[Math.floor(result.schedule.length / 2)]?.closingBalance ?? 0,
-            },
-            {
-              label: "Final month interest",
-              value: result.schedule[result.schedule.length - 1]?.interest ?? 0,
-            },
-            { label: "Total payment", value: result.totalPayment, highlight: true },
-          ]}
-        />
-        <DistributionBar
-          title="Principal vs interest"
-          segments={[
-            { label: "Principal", value: input.principal, color: "#0f5cc0" },
-            { label: "Interest", value: result.totalInterest, color: "#cf3f33" },
-          ]}
-        />
-      </div>
+      <CollapsibleSection
+        title="See payment breakdown"
+        subtitle="Interest, balance, and total payout"
+      >
+        <div className="detail-grid">
+          <BreakdownTable
+            title="Amortization snapshot"
+            rows={[
+              { label: "Month 1 principal", value: result.schedule[0]?.principal ?? 0 },
+              { label: "Month 1 interest", value: result.schedule[0]?.interest ?? 0 },
+              {
+                label: "Mid-loan balance",
+                value:
+                  result.schedule[Math.floor(result.schedule.length / 2)]?.closingBalance ?? 0,
+              },
+              {
+                label: "Final month interest",
+                value: result.schedule[result.schedule.length - 1]?.interest ?? 0,
+              },
+              { label: "Total payment", value: result.totalPayment, highlight: true },
+            ]}
+          />
+          <DistributionBar
+            title="Principal vs interest"
+            segments={[
+              { label: "Principal", value: input.principal, color: "#0f5cc0" },
+              { label: "Interest", value: result.totalInterest, color: "#cf3f33" },
+            ]}
+          />
+        </div>
+      </CollapsibleSection>
 
       <AssumptionPanel assumptions={result.assumptions} notes={result.notes} />
     </div>

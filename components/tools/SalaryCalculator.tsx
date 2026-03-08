@@ -13,8 +13,10 @@ import { formatRupees } from "@/lib/format";
 import {
   AssumptionPanel,
   BreakdownTable,
+  CollapsibleSection,
   CompareCard,
   DistributionBar,
+  FieldHint,
   NumberField,
   PrimaryResultCard,
   QuickPicks,
@@ -34,6 +36,22 @@ export function SalaryCalculator() {
 
   return (
     <div className="tool-panel card">
+      <FieldHint
+        title="Quick estimate"
+        text="Start with annual CTC. Add HRA, rent, or deductions only if you want a more exact old-regime estimate."
+      />
+
+      <div className="field-grid">
+        <NumberField
+          id="salary-ctc"
+          label="Annual CTC"
+          value={input.ctc}
+          step={10000}
+          onChange={(value) => update("ctc", value)}
+          hint="Start here. Example: 12,00,000 for 12 lakh."
+        />
+      </div>
+
       <div className="field-row">
         <SegmentControl
           options={[
@@ -53,17 +71,6 @@ export function SalaryCalculator() {
         />
       </div>
 
-      <div className="field-grid">
-        <NumberField
-          id="salary-ctc"
-          label="Annual CTC"
-          value={input.ctc}
-          step={10000}
-          onChange={(value) => update("ctc", value)}
-          hint="Start here. Example: 12,00,000 for 12 lakh."
-        />
-      </div>
-
       <QuickPicks
         label="Common salary amounts"
         options={[
@@ -75,8 +82,30 @@ export function SalaryCalculator() {
         onSelect={(value) => update("ctc", Number(value))}
       />
 
-      <details>
-        <summary>Tax profile</summary>
+      <PrimaryResultCard
+        label="Monthly take-home"
+        value={formatRupees(result.selected.monthlyTakeHome)}
+        caption={`Using the ${input.regime === "new" ? "new" : "old"} regime for ${input.taxYear.replace("_", "-").replace("FY", "FY ")}`}
+        highlights={[
+          {
+            label: "Annual take-home",
+            value: formatRupees(result.selected.netTakeHome),
+          },
+          {
+            label: "Better regime delta",
+            value: formatRupees(regimeDelta),
+          },
+        ]}
+      />
+
+      <p className="inline-notice">
+        Quick estimate only. This starts with {input.residentialStatus === "resident" ? "resident" : "non-resident"} {input.ageCategory === "under60" ? "below-60" : input.ageCategory === "senior" ? "60-79" : "80+"} tax treatment and ₹{input.professionalTax} professional tax.
+      </p>
+
+      <CollapsibleSection
+        title="Improve accuracy"
+        subtitle="Add tax profile, HRA, rent, and deductions"
+      >
         <div className="field-grid">
           <SelectField
             id="salary-residential-status"
@@ -99,20 +128,6 @@ export function SalaryCalculator() {
               { value: "super-senior", label: "80 and above" },
             ]}
           />
-          <NumberField
-            id="salary-pt"
-            label="Professional tax"
-            value={input.professionalTax}
-            step={100}
-            onChange={(value) => update("professionalTax", value)}
-            hint="Keep 0 if not applicable in your state."
-          />
-        </div>
-      </details>
-
-      <details>
-        <summary>Add rent and HRA details (old regime only)</summary>
-        <div className="field-grid">
           <NumberField
             id="salary-hra"
             label="Annual HRA received"
@@ -137,12 +152,6 @@ export function SalaryCalculator() {
               { value: "non-metro", label: "Non-metro" },
             ]}
           />
-        </div>
-      </details>
-
-      <details>
-        <summary>Add tax-saving deductions</summary>
-        <div className="field-grid">
           <NumberField
             id="salary-80c"
             label="80C investments"
@@ -157,28 +166,16 @@ export function SalaryCalculator() {
             step={1000}
             onChange={(value) => update("npsContribution", value)}
           />
+          <NumberField
+            id="salary-pt"
+            label="Professional tax"
+            value={input.professionalTax}
+            step={100}
+            onChange={(value) => update("professionalTax", value)}
+            hint="Keep 0 if not applicable in your state."
+          />
         </div>
-      </details>
-
-      <PrimaryResultCard
-        label="Monthly take-home"
-        value={formatRupees(result.selected.monthlyTakeHome)}
-        caption={`Using the ${input.regime === "new" ? "new" : "old"} regime for ${input.taxYear.replace("_", "-").replace("FY", "FY ")}`}
-        highlights={[
-          {
-            label: "Annual take-home",
-            value: formatRupees(result.selected.netTakeHome),
-          },
-          {
-            label: "Better regime delta",
-            value: formatRupees(regimeDelta),
-          },
-        ]}
-      />
-
-      <p className="inline-notice">
-        Quick estimate only. This starts with {input.residentialStatus === "resident" ? "resident" : "non-resident"} {input.ageCategory === "under60" ? "below-60" : input.ageCategory === "senior" ? "60-79" : "80+"} tax treatment and ₹{input.professionalTax} professional tax.
-      </p>
+      </CollapsibleSection>
 
       <div className="result-grid result-grid-secondary">
         <StatCard
@@ -193,33 +190,10 @@ export function SalaryCalculator() {
         />
       </div>
 
-      <div className="detail-grid">
-        <BreakdownTable
-          title="Annual salary breakdown"
-          rows={[
-            { label: "Gross salary", value: result.selected.grossSalary },
-            { label: "Basic salary", value: result.selected.basicSalary },
-            { label: "HRA considered", value: result.selected.hra },
-            { label: "Special allowance", value: result.selected.specialAllowance },
-            { label: "Employee PF", value: result.selected.employeePf },
-            { label: "Professional tax", value: result.selected.professionalTax },
-            { label: "Income tax + cess", value: result.selected.totalTax },
-            { label: "Net take-home", value: result.selected.netTakeHome, highlight: true },
-          ]}
-        />
-        <DistributionBar
-          title="Where the CTC goes"
-          segments={[
-            { label: "Take-home", value: result.selected.netTakeHome, color: "#0f5cc0" },
-            { label: "Tax", value: result.selected.totalTax, color: "#cf3f33" },
-            { label: "Employee PF", value: result.selected.employeePf, color: "#0d9f6e" },
-            { label: "Employer PF", value: result.selected.employerPf, color: "#9ca3af" },
-          ]}
-        />
-      </div>
-
-      <section className="detail-card card">
-        <h3>Compare both regimes</h3>
+      <CollapsibleSection
+        title="See regime comparison"
+        subtitle="Compare old and new before you decide"
+      >
         <div className="compare-grid">
           <CompareCard
             label="New regime"
@@ -236,7 +210,37 @@ export function SalaryCalculator() {
             recommended={result.recommendedRegime === "old"}
           />
         </div>
-      </section>
+      </CollapsibleSection>
+
+      <CollapsibleSection
+        title="See full salary breakdown"
+        subtitle="Gross pay, PF, tax, and take-home"
+      >
+        <div className="detail-grid">
+          <BreakdownTable
+            title="Annual salary breakdown"
+            rows={[
+              { label: "Gross salary", value: result.selected.grossSalary },
+              { label: "Basic salary", value: result.selected.basicSalary },
+              { label: "HRA considered", value: result.selected.hra },
+              { label: "Special allowance", value: result.selected.specialAllowance },
+              { label: "Employee PF", value: result.selected.employeePf },
+              { label: "Professional tax", value: result.selected.professionalTax },
+              { label: "Income tax + cess", value: result.selected.totalTax },
+              { label: "Net take-home", value: result.selected.netTakeHome, highlight: true },
+            ]}
+          />
+          <DistributionBar
+            title="Where the CTC goes"
+            segments={[
+              { label: "Take-home", value: result.selected.netTakeHome, color: "#0f5cc0" },
+              { label: "Tax", value: result.selected.totalTax, color: "#cf3f33" },
+              { label: "Employee PF", value: result.selected.employeePf, color: "#0d9f6e" },
+              { label: "Employer PF", value: result.selected.employerPf, color: "#9ca3af" },
+            ]}
+          />
+        </div>
+      </CollapsibleSection>
 
       <AssumptionPanel assumptions={result.assumptions} notes={result.notes} />
     </div>

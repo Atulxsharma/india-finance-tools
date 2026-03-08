@@ -13,7 +13,9 @@ import { formatRupees } from "@/lib/format";
 import {
   AssumptionPanel,
   BreakdownTable,
+  CollapsibleSection,
   CompareCard,
+  FieldHint,
   NumberField,
   PrimaryResultCard,
   QuickPicks,
@@ -30,6 +32,11 @@ export function IncomeTaxCalculator() {
 
   return (
     <div className="tool-panel card">
+      <FieldHint
+        title="Quick comparison"
+        text="Start with annual income. Add deduction details only if you want to test whether the old regime becomes better."
+      />
+
       <div className="field-row">
         <SegmentControl
           options={[
@@ -71,8 +78,24 @@ export function IncomeTaxCalculator() {
         onSelect={(value) => update("annualIncome", Number(value))}
       />
 
-      <details>
-        <summary>Tax profile and old-regime deductions</summary>
+      <PrimaryResultCard
+        label="Recommended regime"
+        value={result.recommendedRegime === "new" ? "New regime" : "Old regime"}
+        caption={`Estimated saving ${formatRupees(result.taxSaving)} for ${input.taxYear.replace("_", "-").replace("FY", "FY ")}`}
+        highlights={[
+          { label: "Old regime tax", value: formatRupees(result.oldRegime.totalTax) },
+          { label: "New regime tax", value: formatRupees(result.newRegime.totalTax) },
+        ]}
+      />
+
+      <p className="inline-notice">
+        Start with income only. This assumes {input.residentialStatus === "resident" ? "resident" : "non-resident"} {input.ageCategory === "under60" ? "below-60" : input.ageCategory === "senior" ? "60-79" : "80+"} tax treatment unless you change the profile.
+      </p>
+
+      <CollapsibleSection
+        title="Improve comparison"
+        subtitle="Add tax profile and old-regime deductions"
+      >
         <div className="field-grid">
           <SelectField
             id="tax-residential-status"
@@ -131,21 +154,7 @@ export function IncomeTaxCalculator() {
             onChange={(value) => update("otherDeductions", value)}
           />
         </div>
-      </details>
-
-      <PrimaryResultCard
-        label="Recommended regime"
-        value={result.recommendedRegime === "new" ? "New regime" : "Old regime"}
-        caption={`Estimated saving ${formatRupees(result.taxSaving)} for ${input.taxYear.replace("_", "-").replace("FY", "FY ")}`}
-        highlights={[
-          { label: "Old regime tax", value: formatRupees(result.oldRegime.totalTax) },
-          { label: "New regime tax", value: formatRupees(result.newRegime.totalTax) },
-        ]}
-      />
-
-      <p className="inline-notice">
-        Start with income only. This assumes {input.residentialStatus === "resident" ? "resident" : "non-resident"} {input.ageCategory === "under60" ? "below-60" : input.ageCategory === "senior" ? "60-79" : "80+"} tax treatment unless you change the profile.
-      </p>
+      </CollapsibleSection>
 
       <div className="result-grid result-grid-secondary">
         <StatCard
@@ -160,8 +169,10 @@ export function IncomeTaxCalculator() {
         />
       </div>
 
-      <section className="detail-card card">
-        <h3>Side-by-side comparison</h3>
+      <CollapsibleSection
+        title="See side-by-side comparison"
+        subtitle="Tax and taxable income under both regimes"
+      >
         <div className="compare-grid">
           <CompareCard
             label="Old regime"
@@ -178,30 +189,35 @@ export function IncomeTaxCalculator() {
             recommended={result.recommendedRegime === "new"}
           />
         </div>
-      </section>
+      </CollapsibleSection>
 
-      <div className="detail-grid">
-        <BreakdownTable
-          title="Old regime details"
-          rows={[
-            { label: "Gross income", value: result.oldRegime.grossIncome },
-            { label: "Total deductions", value: result.oldRegime.totalDeductions },
-            { label: "Taxable income", value: result.oldRegime.taxableIncome },
-            { label: "Rebate", value: result.oldRegime.rebate * -1 },
-            { label: "Tax + cess", value: result.oldRegime.totalTax, highlight: true },
-          ]}
-        />
-        <BreakdownTable
-          title="New regime details"
-          rows={[
-            { label: "Gross income", value: result.newRegime.grossIncome },
-            { label: "Total deductions", value: result.newRegime.totalDeductions },
-            { label: "Taxable income", value: result.newRegime.taxableIncome },
-            { label: "Rebate", value: result.newRegime.rebate * -1 },
-            { label: "Tax + cess", value: result.newRegime.totalTax, highlight: true },
-          ]}
-        />
-      </div>
+      <CollapsibleSection
+        title="See detailed tax breakup"
+        subtitle="Income, deductions, rebate, and total tax"
+      >
+        <div className="detail-grid">
+          <BreakdownTable
+            title="Old regime details"
+            rows={[
+              { label: "Gross income", value: result.oldRegime.grossIncome },
+              { label: "Total deductions", value: result.oldRegime.totalDeductions },
+              { label: "Taxable income", value: result.oldRegime.taxableIncome },
+              { label: "Rebate", value: result.oldRegime.rebate * -1 },
+              { label: "Tax + cess", value: result.oldRegime.totalTax, highlight: true },
+            ]}
+          />
+          <BreakdownTable
+            title="New regime details"
+            rows={[
+              { label: "Gross income", value: result.newRegime.grossIncome },
+              { label: "Total deductions", value: result.newRegime.totalDeductions },
+              { label: "Taxable income", value: result.newRegime.taxableIncome },
+              { label: "Rebate", value: result.newRegime.rebate * -1 },
+              { label: "Tax + cess", value: result.newRegime.totalTax, highlight: true },
+            ]}
+          />
+        </div>
+      </CollapsibleSection>
 
       <AssumptionPanel assumptions={result.assumptions} notes={result.notes} />
     </div>

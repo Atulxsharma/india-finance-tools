@@ -79,6 +79,21 @@ export function QuickPicks({
   );
 }
 
+export function FieldHint({
+  title,
+  text,
+}: {
+  title: string;
+  text: string;
+}) {
+  return (
+    <div className="field-hint">
+      <strong>{title}</strong>
+      <span>{text}</span>
+    </div>
+  );
+}
+
 export function SelectField<T extends string>({
   id,
   label,
@@ -289,6 +304,26 @@ export function AssumptionPanel({
           </>
         ) : null}
       </div>
+    </details>
+  );
+}
+
+export function CollapsibleSection({
+  title,
+  subtitle,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <details className="detail-section">
+      <summary>
+        <span>{title}</span>
+        {subtitle ? <small>{subtitle}</small> : null}
+      </summary>
+      <div className="detail-section-body">{children}</div>
     </details>
   );
 }

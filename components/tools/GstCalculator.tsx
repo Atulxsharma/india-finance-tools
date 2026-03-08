@@ -6,7 +6,9 @@ import { formatRupees } from "@/lib/format";
 import {
   AssumptionPanel,
   BreakdownTable,
+  CollapsibleSection,
   DistributionBar,
+  FieldHint,
   NumberField,
   PrimaryResultCard,
   QuickPicks,
@@ -26,6 +28,11 @@ export function GstCalculator() {
 
   return (
     <div className="tool-panel card">
+      <FieldHint
+        title="Quick GST check"
+        text="Enter the amount and GST rate first. Change the tax split only if you need to see CGST, SGST, or IGST separately."
+      />
+
       <div className="field-row">
         <SegmentControl
           options={[
@@ -73,19 +80,6 @@ export function GstCalculator() {
         }
       />
 
-      <div className="field-row">
-        <SegmentControl
-          options={[
-            { value: "intra-state", label: "CGST + SGST" },
-            { value: "inter-state", label: "IGST" },
-          ]}
-          value={input.supplyType}
-          onChange={(value) =>
-            setInput((current) => ({ ...current, supplyType: value as GSTInput["supplyType"] }))
-          }
-        />
-      </div>
-
       <PrimaryResultCard
         label={input.mode === "add" ? "Invoice total" : "Taxable value"}
         value={formatRupees(input.mode === "add" ? result.totalAmount : result.baseAmount)}
@@ -106,6 +100,24 @@ export function GstCalculator() {
         Good for quick invoice math. You still need the correct GST slab and place of supply.
       </p>
 
+      <CollapsibleSection
+        title="Change tax split"
+        subtitle="Choose CGST + SGST or IGST"
+      >
+        <div className="field-row">
+          <SegmentControl
+            options={[
+              { value: "intra-state", label: "CGST + SGST" },
+              { value: "inter-state", label: "IGST" },
+            ]}
+            value={input.supplyType}
+            onChange={(value) =>
+              setInput((current) => ({ ...current, supplyType: value as GSTInput["supplyType"] }))
+            }
+          />
+        </div>
+      </CollapsibleSection>
+
       <div className="result-grid result-grid-secondary">
         <StatCard
           label="GST amount"
@@ -122,26 +134,31 @@ export function GstCalculator() {
         />
       </div>
 
-      <div className="detail-grid">
-        <BreakdownTable
-          title="GST split"
-          rows={[
-            { label: "Taxable value", value: result.baseAmount },
-            { label: "GST amount", value: result.gstAmount },
-            { label: "CGST", value: result.cgst },
-            { label: "SGST", value: result.sgst },
-            { label: "IGST", value: result.igst },
-            { label: "Invoice total", value: result.totalAmount, highlight: true },
-          ]}
-        />
-        <DistributionBar
-          title="Invoice composition"
-          segments={[
-            { label: "Taxable value", value: result.baseAmount, color: "#0f5cc0" },
-            { label: "GST", value: result.gstAmount, color: "#cf3f33" },
-          ]}
-        />
-      </div>
+      <CollapsibleSection
+        title="See GST breakdown"
+        subtitle="Taxable value, GST, and final total"
+      >
+        <div className="detail-grid">
+          <BreakdownTable
+            title="GST split"
+            rows={[
+              { label: "Taxable value", value: result.baseAmount },
+              { label: "GST amount", value: result.gstAmount },
+              { label: "CGST", value: result.cgst },
+              { label: "SGST", value: result.sgst },
+              { label: "IGST", value: result.igst },
+              { label: "Invoice total", value: result.totalAmount, highlight: true },
+            ]}
+          />
+          <DistributionBar
+            title="Invoice composition"
+            segments={[
+              { label: "Taxable value", value: result.baseAmount, color: "#0f5cc0" },
+              { label: "GST", value: result.gstAmount, color: "#cf3f33" },
+            ]}
+          />
+        </div>
+      </CollapsibleSection>
 
       <AssumptionPanel assumptions={result.assumptions} notes={result.notes} />
     </div>
