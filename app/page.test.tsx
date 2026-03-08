@@ -6,7 +6,9 @@ describe("Home", () => {
   it("prioritizes tool selection over launch messaging", () => {
     render(<Home />);
 
-    expect(screen.getByText("Open a calculator and get the number.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Free online tax and finance calculators for India."),
+    ).toBeInTheDocument();
     expect(screen.getByText("Calculate salary")).toBeInTheDocument();
     expect(screen.queryByText("Phase 1 launch scope")).not.toBeInTheDocument();
   });

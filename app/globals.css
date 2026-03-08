@@ -210,7 +210,10 @@ main {
 }
 
 .directory-section,
-.tool-body {
+.tool-body,
+.content-card,
+.prose-card,
+.info-section {
   display: grid;
   gap: 0.85rem;
 }
@@ -584,6 +587,31 @@ main {
 .related-card {
   display: grid;
   gap: 0.85rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.content-card {
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.prose-card {
+  gap: 1.2rem;
+}
+
+.info-section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.info-section p {
+  color: var(--text-muted);
+}
+
+.info-footer-note {
   padding-top: 1rem;
   border-top: 1px solid var(--border);
 }

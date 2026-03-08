@@ -12,6 +12,10 @@ export function Footer() {
           <Link href="/">Home</Link>
           <Link href="/tools/salary-calculator">Salary</Link>
           <Link href="/tools/income-tax-calculator">Income tax</Link>
+          <Link href="/about">About</Link>
+          <Link href="/privacy-policy">Privacy</Link>
+          <Link href="/terms-and-conditions">Terms</Link>
+          <Link href="/contact">Contact</Link>
         </div>
       </div>
     </footer>
