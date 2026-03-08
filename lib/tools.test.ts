@@ -12,4 +12,23 @@ describe("toolDefinitions", () => {
     expect(toolDefinitionsByCategory.some(([category]) => category === "Generator")).toBe(true);
     expect(toolDefinitionsByCategory.some(([category]) => category === "Commerce")).toBe(true);
   });
+
+  it("keeps related tool slugs valid", () => {
+    const validSlugs = new Set(toolDefinitions.map((tool) => tool.slug));
+
+    for (const tool of toolDefinitions) {
+      for (const relatedSlug of tool.relatedToolSlugs) {
+        expect(validSlugs.has(relatedSlug)).toBe(true);
+      }
+    }
+  });
+
+  it("adds review metadata to static-data tools", () => {
+    const staticTools = toolDefinitions.filter((tool) => tool.runtime === "static-data");
+
+    for (const tool of staticTools) {
+      expect(tool.reviewedAt).toBeTruthy();
+      expect(tool.sourceLabel).toBeTruthy();
+    }
+  });
 });

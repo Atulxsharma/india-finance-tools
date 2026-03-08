@@ -79,6 +79,8 @@ export const toolDefinitions: ToolDefinition[] = [
     runtime: "pure-client",
     featured: true,
     navLabel: "Salary",
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Reviewed against Income Tax Department rules for FY 2024-25 and FY 2025-26",
     targetKeyword: "take home salary calculator india",
     description:
       "Estimate monthly take-home salary with old vs new regime comparison, HRA handling, PF, and professional tax.",
@@ -139,6 +141,8 @@ export const toolDefinitions: ToolDefinition[] = [
     runtime: "pure-client",
     featured: true,
     navLabel: "GST",
+    reviewedAt: "2026-03-08",
+    sourceLabel: "GST invoice math reviewed for inclusive and exclusive calculations",
     targetKeyword: "gst calculator",
     description:
       "Add or remove GST in seconds, switch slabs, and see CGST/SGST or IGST splits clearly.",
@@ -307,6 +311,8 @@ export const toolDefinitions: ToolDefinition[] = [
     runtime: "pure-client",
     featured: true,
     navLabel: "Tax",
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Reviewed against Income Tax Department rules for FY 2024-25 and FY 2025-26",
     targetKeyword: "income tax calculator india",
     description:
       "Compare old vs new regime tax outcomes across financial years with visible deductions, rebates, and take-home impact.",
@@ -367,6 +373,8 @@ export const toolDefinitions: ToolDefinition[] = [
     runtime: "pure-client",
     featured: true,
     navLabel: "PPF",
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Default rate reviewed against the latest DEA small-savings notification and kept editable",
     targetKeyword: "ppf calculator",
     description:
       "Estimate PPF maturity value, total contributions, extension scenarios, and long-term tax-free growth.",
@@ -477,6 +485,8 @@ export const toolDefinitions: ToolDefinition[] = [
     category: "Finance",
     schemaType: "calculator",
     runtime: "pure-client",
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Reviewed against standard gratuity formula guidance and current tax-exempt ceiling",
     targetKeyword: "gratuity calculator",
     description:
       "Estimate gratuity using Act-covered and non-Act formulas, eligibility checks, and tax-exemption context.",
@@ -541,6 +551,8 @@ export const toolDefinitions: ToolDefinition[] = [
     coverage: ["Old-regime HRA exemption", "Binding-rule visibility", "Metro and non-metro handling"],
     howTo: ["Enter annual basic salary, HRA received, and rent paid.", "Select metro or non-metro city status.", "Check the exempt HRA and the rule that limits it."],
     faqs: [{ question: "Does HRA exemption work in the new regime?", answer: "In general planning, HRA exemption is mainly relevant in old-regime cases." }],
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Reviewed against the standard Income Tax Department HRA exemption rule",
   }),
   createToolDefinition({
     slug: "number-to-words",
@@ -660,6 +672,8 @@ export const toolDefinitions: ToolDefinition[] = [
     coverage: ["Employee and employer contribution split", "Long-term corpus estimate", "Yearly balance snapshots"],
     howTo: ["Enter monthly basic pay and contribution rates.", "Choose years and expected annual return.", "Read corpus and yearly balance build-up."],
     faqs: [{ question: "Does this split EPS separately?", answer: "No. This is a planning estimate and does not model EPS allocation separately." }],
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Default rate aligned to the latest official EPF reference used by this tool; return stays editable",
   }),
   createToolDefinition({
     slug: "nps-calculator",
@@ -677,6 +691,8 @@ export const toolDefinitions: ToolDefinition[] = [
     coverage: ["Monthly contribution model", "Corpus and annuity split", "Invested amount vs wealth gained"],
     howTo: ["Enter monthly contribution, years, return, and annuity share.", "Check total corpus, lump sum, and annuity corpus."],
     faqs: [{ question: "Does this tool decide the legal withdrawal ratio?", answer: "No. It models the annuity share you choose for planning." }],
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Normal-exit planning reviewed against official NPS withdrawal guidance; market return stays user-input",
   }),
   createToolDefinition({
     slug: "lump-sum-calculator",
@@ -747,7 +763,7 @@ export const toolDefinitions: ToolDefinition[] = [
     howTo: ["Enter selling price.", "Choose category, fulfilment mode, and shipping band.", "Check total fees and net proceeds."],
     faqs: [{ question: "Are these live Amazon fees?", answer: "No. This uses a reviewed static planning dataset and should be verified against the latest fee card." }],
     reviewedAt: "2026-03-08",
-    sourceLabel: "Reviewed static marketplace fee dataset",
+    sourceLabel: "Reviewed static marketplace fee estimate dataset",
   }),
   createToolDefinition({
     slug: "flipkart-seller-fee-calculator",
@@ -767,7 +783,7 @@ export const toolDefinitions: ToolDefinition[] = [
     howTo: ["Enter selling price.", "Choose category, fulfilment mode, and shipping band.", "Check fee breakdown and net proceeds."],
     faqs: [{ question: "Does this include ads, returns, and GST on fees?", answer: "No. It focuses on a simplified static fee estimate for quick pricing checks." }],
     reviewedAt: "2026-03-08",
-    sourceLabel: "Reviewed static marketplace fee dataset",
+    sourceLabel: "Reviewed static marketplace fee estimate dataset",
   }),
   createToolDefinition({
     slug: "upi-qr-generator",
@@ -802,6 +818,8 @@ export const toolDefinitions: ToolDefinition[] = [
     coverage: ["Fuel-only estimate", "Toll and parking support", "Round-trip toggle"],
     howTo: ["Enter distance, mileage, and fuel price.", "Add tolls or switch on round trip if needed.", "Read total trip cost."],
     faqs: [{ question: "Does this fetch live fuel prices?", answer: "No. Enter the current price you want to model." }],
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Fuel price is fully user-input; no live-rate feed is used",
   }),
   createToolDefinition({
     slug: "stamp-duty-calculator",

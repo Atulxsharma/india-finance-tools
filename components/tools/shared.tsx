@@ -149,6 +149,36 @@ export function DateField({
   );
 }
 
+export function MonthField({
+  id,
+  label,
+  value,
+  onChange,
+  hint,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  hint?: string;
+}) {
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      <input
+        id={id}
+        type="month"
+        value={value}
+        onChange={(event) => {
+          markCalculatorEngagement();
+          onChange(event.target.value);
+        }}
+      />
+      {hint ? <small>{hint}</small> : null}
+    </div>
+  );
+}
+
 export function FileField({
   id,
   label,

@@ -4,7 +4,7 @@ import { InfoPage } from "@/components/InfoPage";
 export const metadata: Metadata = {
   title: "Terms and Conditions",
   description:
-    "Read the terms and conditions for using India Tools and its finance calculators.",
+    "Read the terms and conditions for using India Tools and its calculators, generators, and utility tools.",
   alternates: {
     canonical: "/terms-and-conditions",
   },
@@ -15,12 +15,12 @@ export default function TermsAndConditionsPage() {
     <InfoPage
       eyebrow="Terms"
       title="Terms and Conditions"
-      intro="These terms govern the use of India Tools and all finance calculators published on the site."
+      intro="These terms govern the use of India Tools and all calculators, generators, converters, and utility tools published on the site."
       sections={[
         {
           heading: "Use of the site",
           paragraphs: [
-            "India Tools provides general-purpose finance calculators and explanatory content for informational and planning use. By using the site, you agree to use it lawfully and responsibly.",
+            "India Tools provides general-purpose calculators, generators, converters, and explanatory content for informational and planning use. By using the site, you agree to use it lawfully and responsibly.",
             "The site may be updated, expanded, corrected, or temporarily unavailable at any time without notice.",
           ],
         },

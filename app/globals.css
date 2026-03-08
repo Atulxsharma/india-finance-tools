@@ -421,6 +421,7 @@ main {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .primary-result-value {
@@ -428,6 +429,7 @@ main {
   font-weight: 800;
   letter-spacing: -0.05em;
   line-height: 1.02;
+  overflow-wrap: anywhere;
 }
 
 .result-support {

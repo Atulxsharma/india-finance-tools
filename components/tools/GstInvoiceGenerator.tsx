@@ -46,6 +46,14 @@ export function GstInvoiceGenerator() {
       total: taxableValue + gstAmount,
     };
   }, [buyerState, items, sellerState]);
+  const canDownload =
+    sellerName.trim().length > 0 &&
+    sellerState.trim().length > 0 &&
+    buyerName.trim().length > 0 &&
+    buyerState.trim().length > 0 &&
+    items.every(
+      (item) => item.description.trim().length > 0 && item.quantity > 0 && item.rate >= 0 && item.gstRate >= 0,
+    );
 
   return (
     <div className="tool-body">
@@ -153,6 +161,7 @@ export function GstInvoiceGenerator() {
           </div>
         </div>
         <DownloadButton
+          disabled={!canDownload}
           label="Download GST invoice PDF"
           onDownload={() => previewRef.current && exportNodeAsPdf({ node: previewRef.current, filename: "gst-invoice.pdf" })}
         />

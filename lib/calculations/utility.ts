@@ -8,15 +8,36 @@ export type AgeResult = {
   nextBirthdayInDays: number;
 };
 
+function parseLocalDate(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+
+  if (!match) {
+    return null;
+  }
+
+  const [, year, month, day] = match;
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+
+  if (
+    date.getFullYear() !== Number(year) ||
+    date.getMonth() !== Number(month) - 1 ||
+    date.getDate() !== Number(day)
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
 export function calculateAge(dateOfBirth: string, targetDate?: string): AgeResult | null {
   if (!dateOfBirth) {
     return null;
   }
 
-  const dob = new Date(dateOfBirth);
-  const endDate = targetDate ? new Date(targetDate) : new Date();
+  const dob = parseLocalDate(dateOfBirth);
+  const endDate = targetDate ? parseLocalDate(targetDate) : new Date();
 
-  if (Number.isNaN(dob.getTime()) || Number.isNaN(endDate.getTime()) || dob > endDate) {
+  if (!dob || !endDate || Number.isNaN(endDate.getTime()) || dob > endDate) {
     return null;
   }
 
@@ -129,8 +150,15 @@ function numberToWordsWhole(value: number): string {
 
 export function convertNumberToIndianWords(value: number) {
   const safeValue = Math.max(0, Number.isFinite(value) ? value : 0);
-  const whole = Math.floor(safeValue);
-  const paise = Math.round((safeValue - whole) * 100);
+  const roundedToPaise = Math.round(safeValue * 100) / 100;
+  let whole = Math.floor(roundedToPaise);
+  let paise = Math.round((roundedToPaise - whole) * 100);
+
+  if (paise === 100) {
+    whole += 1;
+    paise = 0;
+  }
+
   const words = numberToWordsWhole(whole);
   const paiseWords = paise > 0 ? numberToWordsWhole(paise) : "zero";
 

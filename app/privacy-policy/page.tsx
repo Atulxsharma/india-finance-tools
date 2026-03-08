@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
         {
           heading: "What the calculators do",
           paragraphs: [
-            "The finance calculators on this site run in your browser. The numbers you enter are used to generate estimates for salary, tax, EMI, SIP, and GST calculations on the page you are using.",
+            "The calculators, generators, and utility tools on this site run in your browser. The values you enter are used to generate estimates, formatted documents, QR codes, or conversions on the page you are using.",
             "Core calculator inputs are not currently tied to a user account because the site does not offer login, saved cloud profiles, or account-based syncing.",
           ],
         },

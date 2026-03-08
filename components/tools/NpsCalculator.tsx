@@ -8,6 +8,7 @@ import {
   FieldHint,
   NumberField,
   PrimaryResultCard,
+  ResultNotice,
   StatCard,
 } from "@/components/tools/shared";
 import { formatRupees } from "@/lib/format";
@@ -32,7 +33,20 @@ export function NpsCalculator() {
           <NumberField id="nps-monthly" label="Monthly contribution" value={input.monthlyContribution} onChange={(value) => setInput((current) => ({ ...current, monthlyContribution: value }))} />
           <NumberField id="nps-return" label="Annual return" step={0.1} value={input.annualReturn} onChange={(value) => setInput((current) => ({ ...current, annualReturn: value }))} />
           <NumberField id="nps-years" label="Years" value={input.years} onChange={(value) => setInput((current) => ({ ...current, years: value }))} />
-          <NumberField id="nps-annuity" label="Annuity allocation %" value={input.annuityAllocation} onChange={(value) => setInput((current) => ({ ...current, annuityAllocation: value }))} />
+          <NumberField
+            id="nps-annuity"
+            label="Annuity allocation %"
+            min={40}
+            max={100}
+            value={input.annuityAllocation}
+            onChange={(value) =>
+              setInput((current) => ({
+                ...current,
+                annuityAllocation: Math.max(40, Math.min(100, value)),
+              }))
+            }
+            hint="For normal exit planning, NPS usually requires at least 40% annuity allocation."
+          />
         </div>
       </section>
 
@@ -58,6 +72,10 @@ export function NpsCalculator() {
         <StatCard label="Wealth gained" value={formatRupees(result.wealthGained)} />
         <StatCard label="Annuity share" value={`${input.annuityAllocation}%`} />
       </div>
+
+      <ResultNotice tone="info">
+        This tool uses a minimum 40% annuity allocation for normal-exit planning. Corpus thresholds and evolving withdrawal rules are not fully modeled.
+      </ResultNotice>
 
       <AssumptionPanel assumptions={result.assumptions} notes={result.notes} />
     </div>

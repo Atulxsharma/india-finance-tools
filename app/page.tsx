@@ -25,18 +25,17 @@ export default function Home() {
   return (
     <div className="page-stack">
       <section className="directory-header">
-        <p className="eyebrow">India finance calculators</p>
-        <h1>Free online tax and finance calculators for India.</h1>
+        <p className="eyebrow">India tools</p>
+        <h1>Free online calculators, generators, and utility tools for India.</h1>
         <p className="hero-text">
-          Check salary, tax, EMI, SIP, PPF, seller fees, QR payments, and document generators
-          without fighting cluttered pages.
+          Check salary, tax, investing, seller fees, property charges, QR payments, and printable documents without fighting cluttered pages.
         </p>
         <div className="hero-actions">
           <Link className="button button-primary" href="/tools/salary-calculator">
-            Calculate salary
+            Open salary calculator
           </Link>
-          <Link className="button button-secondary" href="/tools/ppf-calculator">
-            Open PPF
+          <Link className="button button-secondary" href="/tools/upi-qr-generator">
+            Generate UPI QR
           </Link>
         </div>
       </section>

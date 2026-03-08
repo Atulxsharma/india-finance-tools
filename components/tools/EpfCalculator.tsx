@@ -8,6 +8,7 @@ import {
   FieldHint,
   NumberField,
   PrimaryResultCard,
+  ResultNotice,
   StatCard,
 } from "@/components/tools/shared";
 import { formatRupees } from "@/lib/format";
@@ -18,7 +19,7 @@ export function EpfCalculator() {
     employeeRate: 12,
     employerRate: 12,
     years: 15,
-    annualReturn: 8.15,
+    annualReturn: 8.25,
   });
   const result = useMemo(() => calculateEPF(input), [input]);
 
@@ -52,6 +53,10 @@ export function EpfCalculator() {
         <StatCard label="Interest earned" value={formatRupees(result.interestEarned)} />
         <StatCard label="Years modelled" value={String(input.years)} />
       </div>
+
+      <ResultNotice tone="info">
+        The default rate is set to 8.25% as the latest official EPF reference built into this tool. Keep it editable because future EPF rates can change.
+      </ResultNotice>
 
       <BreakdownTable
         title="Yearly EPF balance"

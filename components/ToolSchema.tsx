@@ -39,6 +39,8 @@ export function ToolSchema({ tool }: { tool: ToolDefinition }) {
         url,
         description: tool.seoContent.metaDescription,
         inLanguage: "en-IN",
+        isAccessibleForFree: true,
+        dateModified: tool.reviewedAt ?? undefined,
         offers: {
           "@type": "Offer",
           price: "0",

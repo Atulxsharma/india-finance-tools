@@ -15,7 +15,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | India Finance Tools`,
+    default: `${siteConfig.name} | India calculators and generators`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,

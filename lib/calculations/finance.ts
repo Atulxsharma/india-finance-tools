@@ -352,6 +352,7 @@ export function calculateGratuity(input: GratuityInput): GratuityResult {
     ],
     notes: [
       "Final employer settlement should always be checked against applicable gratuity rules and company policy.",
+      "This tool uses the standard five-year eligibility check and does not model court-driven edge cases such as 4 years and 240 days.",
     ],
   };
 }
@@ -493,7 +494,7 @@ export function calculateNPS(input: NPSInput): NPSResult {
     annualReturnRate: input.annualReturn,
     years: input.years,
   });
-  const annuityAllocation = Math.min(Math.max(input.annuityAllocation, 0), 100);
+  const annuityAllocation = Math.min(Math.max(input.annuityAllocation, 40), 100);
   const annuityCorpus = corpusResult.futureValue * (annuityAllocation / 100);
 
   return {
@@ -504,10 +505,10 @@ export function calculateNPS(input: NPSInput): NPSResult {
     annuityCorpus: roundCurrency(annuityCorpus),
     assumptions: [
       "The estimate uses a SIP-style monthly contribution model with a fixed expected annual return.",
-      "At retirement, the selected annuity allocation is carved out from the final corpus.",
+      "For normal NPS exit planning, annuity allocation is clamped to a minimum of 40% of corpus.",
     ],
     notes: [
-      "Real NPS outcomes depend on asset allocation, fund performance, and prevailing annuity rules.",
+      "Real NPS outcomes depend on asset allocation, fund performance, corpus thresholds, and prevailing withdrawal rules.",
     ],
   };
 }
@@ -573,9 +574,9 @@ export type CAGRResult = {
 
 export function calculateCAGR(input: CAGRInput): CAGRResult {
   const initialValue = Math.max(1, clampCurrency(input.initialValue));
-  const finalValue = Math.max(initialValue, clampCurrency(input.finalValue));
+  const finalValue = Math.max(0, clampCurrency(input.finalValue));
   const years = Math.max(1, input.years);
-  const cagr = (finalValue / initialValue) ** (1 / years) - 1;
+  const cagr = finalValue === 0 ? -1 : (finalValue / initialValue) ** (1 / years) - 1;
   const targetFinalValue =
     input.targetRate === undefined
       ? 0

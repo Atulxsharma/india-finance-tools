@@ -2,11 +2,11 @@
 
 import { useMemo, useRef, useState } from "react";
 import {
-  DateField,
   DownloadButton,
   exportNodeAsPdf,
   FieldHint,
   InlinePreviewCard,
+  MonthField,
   NumberField,
   PrimaryResultCard,
   TextField,
@@ -19,10 +19,10 @@ function monthRange(startMonth: string, endMonth: string) {
     return [];
   }
 
-  const start = new Date(`${startMonth}-01`);
-  const end = new Date(`${endMonth}-01`);
+  const start = parseMonthValue(startMonth);
+  const end = parseMonthValue(endMonth);
 
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start > end) {
+  if (!start || !end || start > end) {
     return [];
   }
 
@@ -42,6 +42,23 @@ function monthRange(startMonth: string, endMonth: string) {
   return result;
 }
 
+function parseMonthValue(value: string) {
+  const match = /^(\d{4})-(\d{2})$/.exec(value);
+
+  if (!match) {
+    return null;
+  }
+
+  const [, year, month] = match;
+  const date = new Date(Number(year), Number(month) - 1, 1);
+
+  if (date.getFullYear() !== Number(year) || date.getMonth() !== Number(month) - 1) {
+    return null;
+  }
+
+  return date;
+}
+
 export function RentReceiptGenerator() {
   const previewRef = useRef<HTMLDivElement>(null);
   const [tenantName, setTenantName] = useState("Rahul Sharma");
@@ -55,6 +72,11 @@ export function RentReceiptGenerator() {
   const [revenueStamp, setRevenueStamp] = useState(false);
   const months = useMemo(() => monthRange(startMonth, endMonth), [endMonth, startMonth]);
   const annualRent = months.length * monthlyRent;
+  const canDownload =
+    months.length > 0 &&
+    tenantName.trim().length > 0 &&
+    landlordName.trim().length > 0 &&
+    address.trim().length > 0;
 
   return (
     <div className="tool-body">
@@ -68,8 +90,8 @@ export function RentReceiptGenerator() {
           <TextField id="landlord-name" label="Landlord name" value={landlordName} onChange={setLandlordName} />
           <NumberField id="monthly-rent" label="Monthly rent" value={monthlyRent} onChange={setMonthlyRent} />
           <TextField id="payment-mode" label="Payment mode" value={paymentMode} onChange={setPaymentMode} />
-          <DateField id="rent-start" label="Start month" value={`${startMonth}-01`} onChange={(value) => setStartMonth(value.slice(0, 7))} />
-          <DateField id="rent-end" label="End month" value={`${endMonth}-01`} onChange={(value) => setEndMonth(value.slice(0, 7))} />
+          <MonthField id="rent-start" label="Start month" value={startMonth} onChange={setStartMonth} />
+          <MonthField id="rent-end" label="End month" value={endMonth} onChange={setEndMonth} />
         </div>
         <TextField id="rent-address" label="Rental address" value={address} onChange={setAddress} />
         <div className="field-grid">
@@ -108,7 +130,7 @@ export function RentReceiptGenerator() {
           ))}
         </div>
         <DownloadButton
-          disabled={months.length === 0}
+          disabled={!canDownload}
           label="Download receipt PDF"
           onDownload={() => previewRef.current && exportNodeAsPdf({ node: previewRef.current, filename: "rent-receipts.pdf" })}
         />

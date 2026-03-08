@@ -5,6 +5,7 @@ import {
   FieldHint,
   NumberField,
   PrimaryResultCard,
+  ResultNotice,
   ToggleField,
   StatCard,
 } from "@/components/tools/shared";
@@ -59,6 +60,10 @@ export function FuelCostCalculator() {
         <StatCard label="Fuel only" value={formatRupees(result.fuelCost)} />
         <StatCard label="Toll / parking" value={formatRupees(tollCost)} />
       </div>
+
+      <ResultNotice tone="info">
+        This is a user-input estimate. Enter the current petrol or diesel price you want to model because the tool does not fetch live fuel rates.
+      </ResultNotice>
     </div>
   );
 }

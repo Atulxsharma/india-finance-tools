@@ -22,6 +22,11 @@ export function MarriageBiodataMaker() {
   const [family, setFamily] = useState("Family based in Delhi. Father runs a business, mother is a homemaker.");
   const [about, setAbout] = useState("Calm, family-oriented, and values a balanced modern lifestyle.");
   const [photoUrl, setPhotoUrl] = useState("");
+  const canDownload =
+    name.trim().length > 0 &&
+    age.trim().length > 0 &&
+    education.trim().length > 0 &&
+    profession.trim().length > 0;
 
   return (
     <div className="tool-body">
@@ -78,6 +83,7 @@ export function MarriageBiodataMaker() {
           </div>
         </div>
         <DownloadButton
+          disabled={!canDownload}
           label="Download biodata PDF"
           onDownload={() => previewRef.current && exportNodeAsPdf({ node: previewRef.current, filename: "marriage-biodata.pdf" })}
         />

@@ -36,7 +36,7 @@ export default function ContactPage() {
         {
           heading: "Response expectations",
           paragraphs: [
-            "Because the site is still in an early growth phase, response times may vary. High-impact corrections and logic issues should be prioritized first.",
+            "Response times may vary. High-impact corrections, broken downloads, and logic issues should be prioritized first.",
           ],
         },
       ]}

@@ -37,6 +37,7 @@ export function SalarySlipGenerator() {
       net: gross - deductions,
     };
   }, [basic, da, esi, hra, pf, professionalTax, specialAllowance, tds]);
+  const canDownload = companyName.trim().length > 0 && employeeName.trim().length > 0;
 
   return (
     <div className="tool-body">
@@ -108,6 +109,7 @@ export function SalarySlipGenerator() {
           <strong>Net pay: {formatRupees(totals.net)}</strong>
         </div>
         <DownloadButton
+          disabled={!canDownload}
           label="Download salary slip PDF"
           onDownload={() => previewRef.current && exportNodeAsPdf({ node: previewRef.current, filename: "salary-slip.pdf" })}
         />

@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  calculateCAGR,
   calculateEMI,
+  calculateEPF,
   calculateFD,
   calculateGST,
   calculateGratuity,
+  calculateNPS,
   calculatePPF,
   calculateSIP,
 } from "@/lib/calculations/finance";
@@ -132,6 +135,49 @@ describe("calculateFD", () => {
     expect(result.maturityValue).toBeGreaterThan(500_000);
     expect(result.postTaxValue).toBeLessThan(result.maturityValue);
     expect(result.postTaxInterest).toBeLessThan(result.interestEarned);
+  });
+});
+
+describe("calculateEPF", () => {
+  it("builds EPF corpus from employee and employer contributions", () => {
+    const result = calculateEPF({
+      monthlyBasic: 20_000,
+      employeeRate: 12,
+      employerRate: 12,
+      years: 5,
+      annualReturn: 8.25,
+    });
+
+    expect(result.corpus).toBeGreaterThan(0);
+    expect(result.employeeContribution).toBe(144_000);
+    expect(result.employerContribution).toBe(144_000);
+    expect(result.yearlySnapshots).toHaveLength(5);
+  });
+});
+
+describe("calculateNPS", () => {
+  it("keeps annuity allocation at a normal-exit floor of 40%", () => {
+    const result = calculateNPS({
+      monthlyContribution: 5_000,
+      annualReturn: 10,
+      years: 20,
+      annuityAllocation: 10,
+    });
+
+    expect(result.annuityCorpus).toBe(Math.round(result.corpus * 0.4));
+    expect(result.lumpSum).toBe(result.corpus - result.annuityCorpus);
+  });
+});
+
+describe("calculateCAGR", () => {
+  it("supports negative CAGR when the final value is lower than the initial value", () => {
+    const result = calculateCAGR({
+      initialValue: 100_000,
+      finalValue: 50_000,
+      years: 3,
+    });
+
+    expect(result.cagr).toBeLessThan(0);
   });
 });
 

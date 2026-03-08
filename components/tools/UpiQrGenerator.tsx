@@ -9,6 +9,7 @@ import {
   InlinePreviewCard,
   NumberField,
   PrimaryResultCard,
+  ResultNotice,
   StatCard,
   TextAreaField,
   TextField,
@@ -43,6 +44,10 @@ function buildUpiUri({
   return `upi://pay?${params.toString()}`;
 }
 
+function isValidUpiId(value: string) {
+  return /^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z][a-zA-Z0-9.-]{1,63}$/.test(value.trim());
+}
+
 export function UpiQrGenerator() {
   const [payeeName, setPayeeName] = useState("India Tools");
   const [upiId, setUpiId] = useState("indiatools@upi");
@@ -50,16 +55,25 @@ export function UpiQrGenerator() {
   const [note, setNote] = useState("Payment");
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const validUpiId = isValidUpiId(upiId);
+  const canGenerate = payeeName.trim().length > 0 && validUpiId;
   const paymentUri = useMemo(
-    () => buildUpiUri({ payeeName, upiId, amount, note }),
-    [amount, note, payeeName, upiId],
+    () =>
+      canGenerate ? buildUpiUri({ payeeName: payeeName.trim(), upiId: upiId.trim(), amount, note }) : "",
+    [amount, canGenerate, note, payeeName, upiId],
   );
 
   useEffect(() => {
+    if (!paymentUri) {
+      return;
+    }
+
     void QRCode.toDataURL(paymentUri, {
       margin: 1,
       width: 512,
-    }).then(setQrDataUrl);
+    })
+      .then(setQrDataUrl)
+      .catch(() => setQrDataUrl(""));
   }, [paymentUri]);
 
   return (
@@ -71,7 +85,13 @@ export function UpiQrGenerator() {
         />
         <div className="field-grid">
           <TextField id="upi-name" label="Payee name" value={payeeName} onChange={setPayeeName} />
-          <TextField id="upi-id" label="UPI ID" value={upiId} onChange={setUpiId} />
+          <TextField
+            id="upi-id"
+            label="UPI ID / VPA"
+            value={upiId}
+            onChange={setUpiId}
+            hint="Use a valid UPI address such as name@upi or 9876543210@paytm. A plain phone number will not work."
+          />
           <NumberField id="upi-amount" label="Amount (optional)" step={0.01} value={amount} onChange={setAmount} />
         </div>
         <TextAreaField id="upi-note" label="Note (optional)" rows={2} value={note} onChange={setNote} />
@@ -84,11 +104,19 @@ export function UpiQrGenerator() {
           { label: "UPI ID", value: upiId },
         ]}
         label="UPI QR ready"
-        value={amount > 0 ? `₹${amount.toFixed(2)}` : "Scan to pay"}
+        value={canGenerate ? (amount > 0 ? `₹${amount.toFixed(2)}` : "Scan to pay") : "Enter a valid UPI ID"}
       />
 
+      {!validUpiId ? (
+        <ResultNotice>
+          Enter a valid UPI ID or VPA such as <strong>name@upi</strong>. Plain phone numbers do not work as generic UPI payment addresses.
+        </ResultNotice>
+      ) : null}
+
       <InlinePreviewCard subtitle="Preview and download the QR code as a PNG image." title="QR preview">
-        {qrDataUrl ? <img alt="UPI QR code" src={qrDataUrl} style={{ maxWidth: 260, width: "100%" }} /> : null}
+        {canGenerate && qrDataUrl ? (
+          <img alt="UPI QR code" src={qrDataUrl} style={{ maxWidth: 260, width: "100%" }} />
+        ) : null}
         <div className="result-grid">
           <StatCard label="Payee" value={payeeName} />
           <StatCard label="UPI ID" value={upiId} />
@@ -102,6 +130,7 @@ export function UpiQrGenerator() {
           <div className="hero-actions">
             <button
               className="button button-secondary"
+              disabled={!paymentUri}
               type="button"
               onClick={async () => {
                 await navigator.clipboard.writeText(paymentUri);
@@ -114,7 +143,7 @@ export function UpiQrGenerator() {
           </div>
         </div>
         <DownloadButton
-          disabled={!qrDataUrl}
+          disabled={!qrDataUrl || !canGenerate}
           label="Download QR PNG"
           onDownload={() => {
             const anchor = document.createElement("a");
