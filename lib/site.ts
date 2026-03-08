@@ -19,5 +19,5 @@ export const siteConfig = {
   name: "India Tools",
   url: resolveSiteUrl(),
   description:
-    "High-trust finance calculators for India covering salary, GST, EMI, SIP, and income tax.",
+    "Finance calculators for India covering salary, income tax, GST, EMI, SIP, PPF, FD, and gratuity.",
 };
