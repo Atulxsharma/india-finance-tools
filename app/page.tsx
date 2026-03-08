@@ -4,16 +4,16 @@ import { ToolDirectory } from "@/components/ToolDirectory";
 import { toolDefinitions, toolDefinitionsByCategory } from "@/lib/tools";
 
 export const metadata: Metadata = {
-  title: "Free Online Tax and Finance Calculators for India",
+  title: "Free Online India Tools, Calculators, and Generators",
   description:
-    "Use free online India finance calculators for salary, income tax, EMI, SIP, GST, PPF, FD, and gratuity. Fast on mobile, transparent about assumptions, and built for quick checks.",
+    "Use free online India calculators, generators, and converters for salary, tax, EMI, SIP, PPF, seller fees, UPI QR, GST invoices, rent receipts, and more.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Free Online Tax and Finance Calculators for India | India Tools",
+    title: "Free Online India Tools, Calculators, and Generators | India Tools",
     description:
-      "Use free online India finance calculators for salary, income tax, EMI, SIP, GST, PPF, FD, and gratuity. Fast on mobile, transparent about assumptions, and built for quick checks.",
+      "Use free online India calculators, generators, and converters for salary, tax, EMI, SIP, PPF, seller fees, UPI QR, GST invoices, rent receipts, and more.",
     url: "/",
     type: "website",
   },
@@ -43,7 +43,7 @@ export default function Home() {
 
       <section className="directory-section">
         <div className="section-heading">
-          <h2>Most used calculators</h2>
+          <h2>Most used tools</h2>
           <p className="muted">Pick a tool, enter your numbers, and move on.</p>
         </div>
 
@@ -65,7 +65,7 @@ export default function Home() {
         <div className="section-heading">
           <h2>What you can do here</h2>
           <p className="muted">
-            Use the site for quick salary, tax, borrowing, investing, and invoice checks.
+            Use the site for salary, tax, investing, seller, payment, property, and document tasks.
           </p>
         </div>
 
@@ -77,9 +77,9 @@ export default function Home() {
               and built to show the assumptions behind the result instead of hiding them.
             </p>
             <p>
-              Start with a simple number like annual CTC, annual income, loan amount, or
-              monthly SIP. Then expand the details if you want to compare tax regimes, test
-              deductions, inspect EMI cost, or verify GST splits.
+              Start with a simple number, document, or payment detail. Then expand the details
+              if you want to compare tax regimes, inspect borrowing cost, estimate seller fees,
+              create a QR code, or generate printable records.
             </p>
           </div>
         </div>
@@ -87,8 +87,8 @@ export default function Home() {
 
       <section className="directory-section">
         <div className="section-heading">
-          <h2>Popular checks</h2>
-          <p className="muted">Jump straight to the most common finance questions.</p>
+          <h2>Popular tasks</h2>
+          <p className="muted">Jump straight to common India-specific calculations and generators.</p>
         </div>
 
         <div className="related-links">
@@ -115,6 +115,18 @@ export default function Home() {
           </Link>
           <Link className="text-link related-link" href="/tools/gratuity-calculator">
             Gratuity amount calculator
+          </Link>
+          <Link className="text-link related-link" href="/tools/amazon-seller-fee-calculator">
+            Amazon seller fee calculator
+          </Link>
+          <Link className="text-link related-link" href="/tools/upi-qr-generator">
+            UPI QR generator
+          </Link>
+          <Link className="text-link related-link" href="/tools/gst-invoice-generator">
+            GST invoice generator
+          </Link>
+          <Link className="text-link related-link" href="/tools/rent-receipt-generator">
+            Rent receipt generator
           </Link>
         </div>
       </section>
