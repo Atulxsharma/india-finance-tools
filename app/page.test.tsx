@@ -10,6 +10,8 @@ describe("Home", () => {
       screen.getByText("Free online tax and finance calculators for India."),
     ).toBeInTheDocument();
     expect(screen.getByText("Calculate salary")).toBeInTheDocument();
+    expect(screen.getAllByText("PPF Calculator").length).toBeGreaterThan(0);
+    expect(screen.getByLabelText("Search tools")).toBeInTheDocument();
     expect(screen.queryByText("Phase 1 launch scope")).not.toBeInTheDocument();
   });
 });

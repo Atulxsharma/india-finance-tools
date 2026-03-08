@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ToolDirectory } from "@/components/ToolDirectory";
 import { toolDefinitions, toolDefinitionsByCategory } from "@/lib/tools";
 
 export const metadata: Metadata = {
@@ -19,18 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const leadTools = [
-    "salary-calculator",
-    "income-tax-calculator",
-    "emi-calculator",
-    "sip-calculator",
-    "gst-calculator",
-    "ppf-calculator",
-    "fd-calculator",
-    "gratuity-calculator",
-  ]
-    .map((slug) => toolDefinitions.find((tool) => tool.slug === slug))
-    .filter((tool) => tool !== undefined);
+  const leadTools = toolDefinitions.filter((tool) => tool.featured).slice(0, 8);
 
   return (
     <div className="page-stack">
@@ -38,15 +28,15 @@ export default function Home() {
         <p className="eyebrow">India finance calculators</p>
         <h1>Free online tax and finance calculators for India.</h1>
         <p className="hero-text">
-          Check take-home salary, compare tax regimes, estimate EMI, project SIP growth,
-          calculate GST, and plan PPF, FD, or gratuity without fighting cluttered pages.
+          Check salary, tax, EMI, SIP, PPF, seller fees, QR payments, and document generators
+          without fighting cluttered pages.
         </p>
         <div className="hero-actions">
           <Link className="button button-primary" href="/tools/salary-calculator">
             Calculate salary
           </Link>
-          <Link className="button button-secondary" href="/tools/income-tax-calculator">
-            Compare tax regimes
+          <Link className="button button-secondary" href="/tools/ppf-calculator">
+            Open PPF
           </Link>
         </div>
       </section>
@@ -129,27 +119,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="directory-section">
-        <div className="section-heading">
-          <h2>All calculators</h2>
-          <p className="muted">Browse the full tool library by category.</p>
-        </div>
-
-        {toolDefinitionsByCategory.map(([category, tools]) => (
-          <div className="content-card" key={category}>
-            <div className="section-heading">
-              <h3>{category}</h3>
-            </div>
-            <div className="related-links">
-              {tools.map((tool) => (
-                <Link className="text-link related-link" href={`/tools/${tool.slug}`} key={tool.slug}>
-                  {tool.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-      </section>
+      <ToolDirectory categories={toolDefinitionsByCategory} tools={toolDefinitions} />
     </div>
   );
 }

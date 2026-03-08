@@ -356,6 +356,391 @@ export function calculateGratuity(input: GratuityInput): GratuityResult {
   };
 }
 
+export type HRAInput = {
+  basicSalary: number;
+  hraReceived: number;
+  rentPaid: number;
+  cityTier: "metro" | "non-metro";
+  dearnessAllowance: number;
+};
+
+export type HRAResult = {
+  exemptHra: number;
+  taxableHra: number;
+  limits: Array<{ label: string; value: number }>;
+  bindingRule: string;
+  assumptions: string[];
+  notes: string[];
+};
+
+export function calculateHRA(input: HRAInput): HRAResult {
+  const basicSalary = clampCurrency(input.basicSalary);
+  const hraReceived = clampCurrency(input.hraReceived);
+  const rentPaid = clampCurrency(input.rentPaid);
+  const dearnessAllowance = clampCurrency(input.dearnessAllowance);
+  const salaryBasis = basicSalary + dearnessAllowance;
+  const rentMinusTenPercent = Math.max(0, rentPaid - salaryBasis * 0.1);
+  const salaryLimit = salaryBasis * (input.cityTier === "metro" ? 0.5 : 0.4);
+  const limits = [
+    { label: "Actual HRA received", value: hraReceived },
+    { label: "Rent paid minus 10% of salary", value: rentMinusTenPercent },
+    { label: input.cityTier === "metro" ? "50% of salary" : "40% of salary", value: salaryLimit },
+  ];
+  const exemptHra = roundCurrency(Math.min(...limits.map((item) => item.value)));
+  const bindingRule = limits.reduce((lowest, current) =>
+    current.value < lowest.value ? current : lowest,
+  ).label;
+
+  return {
+    exemptHra,
+    taxableHra: Math.max(0, roundCurrency(hraReceived - exemptHra)),
+    limits: limits.map((item) => ({ ...item, value: roundCurrency(item.value) })),
+    bindingRule,
+    assumptions: [
+      "This estimate follows the common old-regime HRA exemption comparison of three limits.",
+      "Dearness allowance is included only if it forms part of retirement benefits in your salary structure.",
+    ],
+    notes: [
+      "HRA exemption generally matters only for old-regime tax planning.",
+    ],
+  };
+}
+
+export type EPFInput = {
+  monthlyBasic: number;
+  employeeRate: number;
+  employerRate: number;
+  years: number;
+  annualReturn: number;
+};
+
+export type EPFResult = {
+  corpus: number;
+  employeeContribution: number;
+  employerContribution: number;
+  interestEarned: number;
+  yearlySnapshots: Array<{ year: number; balance: number }>;
+  assumptions: string[];
+  notes: string[];
+};
+
+export function calculateEPF(input: EPFInput): EPFResult {
+  const monthlyBasic = clampCurrency(input.monthlyBasic);
+  const employeeRate = Math.max(0, input.employeeRate) / 100;
+  const employerRate = Math.max(0, input.employerRate) / 100;
+  const years = Math.max(1, Math.round(input.years));
+  const monthlyReturn = Math.max(0, input.annualReturn) / 12 / 100;
+  const months = years * 12;
+  const employeeMonthly = monthlyBasic * employeeRate;
+  const employerMonthly = monthlyBasic * employerRate;
+  let balance = 0;
+  const yearlySnapshots: Array<{ year: number; balance: number }> = [];
+
+  for (let month = 1; month <= months; month += 1) {
+    balance += employeeMonthly + employerMonthly;
+    balance *= 1 + monthlyReturn;
+
+    if (month % 12 === 0) {
+      yearlySnapshots.push({
+        year: month / 12,
+        balance: roundCurrency(balance),
+      });
+    }
+  }
+
+  const employeeContribution = employeeMonthly * months;
+  const employerContribution = employerMonthly * months;
+
+  return {
+    corpus: roundCurrency(balance),
+    employeeContribution: roundCurrency(employeeContribution),
+    employerContribution: roundCurrency(employerContribution),
+    interestEarned: Math.max(
+      0,
+      roundCurrency(balance - employeeContribution - employerContribution),
+    ),
+    yearlySnapshots,
+    assumptions: [
+      "This is a fixed-contribution, fixed-return estimate for long-term EPF planning.",
+      "Actual EPF crediting and EPS allocation can differ from a simplified monthly compounding model.",
+    ],
+    notes: [
+      "Employer contribution shown here is a planning estimate and does not split EPS separately.",
+    ],
+  };
+}
+
+export type NPSInput = {
+  monthlyContribution: number;
+  annualReturn: number;
+  years: number;
+  annuityAllocation: number;
+};
+
+export type NPSResult = {
+  corpus: number;
+  totalInvested: number;
+  wealthGained: number;
+  lumpSum: number;
+  annuityCorpus: number;
+  assumptions: string[];
+  notes: string[];
+};
+
+export function calculateNPS(input: NPSInput): NPSResult {
+  const corpusResult = calculateSIP({
+    monthlyInvestment: input.monthlyContribution,
+    annualReturnRate: input.annualReturn,
+    years: input.years,
+  });
+  const annuityAllocation = Math.min(Math.max(input.annuityAllocation, 0), 100);
+  const annuityCorpus = corpusResult.futureValue * (annuityAllocation / 100);
+
+  return {
+    corpus: corpusResult.futureValue,
+    totalInvested: corpusResult.totalInvested,
+    wealthGained: corpusResult.wealthGained,
+    lumpSum: roundCurrency(corpusResult.futureValue - annuityCorpus),
+    annuityCorpus: roundCurrency(annuityCorpus),
+    assumptions: [
+      "The estimate uses a SIP-style monthly contribution model with a fixed expected annual return.",
+      "At retirement, the selected annuity allocation is carved out from the final corpus.",
+    ],
+    notes: [
+      "Real NPS outcomes depend on asset allocation, fund performance, and prevailing annuity rules.",
+    ],
+  };
+}
+
+export type LumpSumInput = {
+  amount: number;
+  annualReturn: number;
+  years: number;
+};
+
+export type LumpSumResult = {
+  maturityValue: number;
+  wealthGained: number;
+  sipEquivalentValue: number;
+  yearlySnapshots: Array<{ year: number; value: number }>;
+  assumptions: string[];
+  notes: string[];
+};
+
+export function calculateLumpSum(input: LumpSumInput): LumpSumResult {
+  const amount = clampCurrency(input.amount);
+  const annualReturn = Math.max(0, input.annualReturn);
+  const years = Math.max(1, Math.round(input.years));
+  const maturityValue = amount * (1 + annualReturn / 100) ** years;
+  const yearlySnapshots = Array.from({ length: years }, (_, index) => ({
+    year: index + 1,
+    value: roundCurrency(amount * (1 + annualReturn / 100) ** (index + 1)),
+  }));
+  const sipEquivalentValue = calculateSIP({
+    monthlyInvestment: amount / Math.max(1, years * 12),
+    annualReturnRate: annualReturn,
+    years,
+  }).futureValue;
+
+  return {
+    maturityValue: roundCurrency(maturityValue),
+    wealthGained: Math.max(0, roundCurrency(maturityValue - amount)),
+    sipEquivalentValue,
+    yearlySnapshots,
+    assumptions: [
+      "Returns are compounded annually using a constant expected rate.",
+      "The SIP comparison assumes the same total capital spread evenly across the full period.",
+    ],
+    notes: [
+      "Real market returns vary over time. Use this as a comparison estimate, not a guarantee.",
+    ],
+  };
+}
+
+export type CAGRInput = {
+  initialValue: number;
+  finalValue: number;
+  years: number;
+  targetRate?: number;
+};
+
+export type CAGRResult = {
+  cagr: number;
+  targetFinalValue: number;
+  assumptions: string[];
+  notes: string[];
+};
+
+export function calculateCAGR(input: CAGRInput): CAGRResult {
+  const initialValue = Math.max(1, clampCurrency(input.initialValue));
+  const finalValue = Math.max(initialValue, clampCurrency(input.finalValue));
+  const years = Math.max(1, input.years);
+  const cagr = (finalValue / initialValue) ** (1 / years) - 1;
+  const targetFinalValue =
+    input.targetRate === undefined
+      ? 0
+      : initialValue * (1 + Math.max(0, input.targetRate) / 100) ** years;
+
+  return {
+    cagr: Number((cagr * 100).toFixed(2)),
+    targetFinalValue: roundCurrency(targetFinalValue),
+    assumptions: [
+      "CAGR smooths growth into a constant annualized rate over the chosen time period.",
+    ],
+    notes: [
+      "CAGR is a summary measure and does not show volatility or intermediate drawdowns.",
+    ],
+  };
+}
+
+export type SWPInput = {
+  corpus: number;
+  monthlyWithdrawal: number;
+  annualReturn: number;
+  annualInflation: number;
+};
+
+export type SWPResult = {
+  monthsLasted: number;
+  yearsLasted: number;
+  totalWithdrawn: number;
+  finalCorpus: number;
+  timeline: Array<{ month: number; corpus: number }>;
+  assumptions: string[];
+  notes: string[];
+};
+
+export function calculateSWP(input: SWPInput): SWPResult {
+  const corpus = clampCurrency(input.corpus);
+  const monthlyReturn = Math.max(0, input.annualReturn) / 12 / 100;
+  const monthlyInflation = Math.max(0, input.annualInflation) / 12 / 100;
+  const monthlyWithdrawal = clampCurrency(input.monthlyWithdrawal);
+  const timeline: Array<{ month: number; corpus: number }> = [];
+  let currentCorpus = corpus;
+  let withdrawal = monthlyWithdrawal;
+  let month = 0;
+
+  while (currentCorpus > 0 && month < 600) {
+    currentCorpus *= 1 + monthlyReturn;
+    currentCorpus -= withdrawal;
+    month += 1;
+
+    if (month % 12 === 0 || month === 1) {
+      timeline.push({
+        month,
+        corpus: roundCurrency(Math.max(0, currentCorpus)),
+      });
+    }
+
+    withdrawal *= 1 + monthlyInflation;
+  }
+
+  return {
+    monthsLasted: month,
+    yearsLasted: Number((month / 12).toFixed(1)),
+    totalWithdrawn: roundCurrency(corpus - Math.max(0, currentCorpus) + Math.max(0, month === 600 ? currentCorpus : 0)),
+    finalCorpus: roundCurrency(Math.max(0, currentCorpus)),
+    timeline,
+    assumptions: [
+      "This model assumes a constant monthly return and a constant monthly withdrawal pattern.",
+      "If inflation is enabled, withdrawals are stepped up every month using the chosen annual inflation assumption.",
+    ],
+    notes: [
+      "Actual portfolio performance and sequence of returns can materially change how long the corpus lasts.",
+    ],
+  };
+}
+
+export type SimpleInterestInput = {
+  principal: number;
+  rate: number;
+  years: number;
+};
+
+export type SimpleInterestResult = {
+  simpleInterest: number;
+  totalAmount: number;
+  compoundAmount: number;
+  extraWithCompounding: number;
+  assumptions: string[];
+  notes: string[];
+};
+
+export function calculateSimpleInterest(input: SimpleInterestInput): SimpleInterestResult {
+  const principal = clampCurrency(input.principal);
+  const rate = Math.max(0, input.rate);
+  const years = Math.max(0, input.years);
+  const simpleInterest = principal * rate * years / 100;
+  const compoundAmount = principal * (1 + rate / 100) ** years;
+
+  return {
+    simpleInterest: roundCurrency(simpleInterest),
+    totalAmount: roundCurrency(principal + simpleInterest),
+    compoundAmount: roundCurrency(compoundAmount),
+    extraWithCompounding: Math.max(0, roundCurrency(compoundAmount - principal - simpleInterest)),
+    assumptions: [
+      "Simple interest assumes the principal stays constant for the full period.",
+      "Compound comparison uses annual compounding with the same rate and tenure.",
+    ],
+    notes: [
+      "Banks and lenders may compound more frequently than once a year.",
+    ],
+  };
+}
+
+export type FlatVsReducingInput = {
+  principal: number;
+  rate: number;
+  years: number;
+  mode: "flat-to-reducing" | "reducing-to-flat";
+};
+
+export type FlatVsReducingResult = {
+  flatEmi: number;
+  reducingEmi: number;
+  flatTotalInterest: number;
+  reducingTotalInterest: number;
+  equivalentRate: number;
+  assumptions: string[];
+  notes: string[];
+};
+
+export function calculateFlatVsReducing(
+  input: FlatVsReducingInput,
+): FlatVsReducingResult {
+  const principal = clampCurrency(input.principal);
+  const years = Math.max(1, input.years);
+  const months = Math.max(1, Math.round(years * 12));
+  const flatRate = input.mode === "flat-to-reducing" ? Math.max(0, input.rate) : Math.max(0, input.rate / 1.8);
+  const reducingRate =
+    input.mode === "flat-to-reducing"
+      ? Math.max(0, input.rate * 1.8)
+      : Math.max(0, input.rate);
+  const flatTotalInterest = principal * flatRate * years / 100;
+  const flatEmi = (principal + flatTotalInterest) / months;
+  const reducingResult = calculateEMI({
+    principal,
+    annualRate: reducingRate,
+    tenureValue: years,
+    tenureUnit: "years",
+  });
+
+  return {
+    flatEmi: roundCurrency(flatEmi),
+    reducingEmi: reducingResult.monthlyEmi,
+    flatTotalInterest: roundCurrency(flatTotalInterest),
+    reducingTotalInterest: reducingResult.totalInterest,
+    equivalentRate: Number((input.mode === "flat-to-reducing" ? reducingRate : flatRate).toFixed(2)),
+    assumptions: [
+      "The equivalent-rate conversion uses a common approximation for quick comparison, not a lender-specific APR model.",
+      "Reducing-balance EMI is calculated with equal monthly instalments.",
+    ],
+    notes: [
+      "Always check the lender's actual reducing-balance APR, fees, and insurance before deciding.",
+    ],
+  };
+}
+
 function clampCurrency(value: number) {
   return Math.max(0, Number.isFinite(value) ? value : 0);
 }

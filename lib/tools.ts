@@ -1,4 +1,74 @@
-import { ToolDefinition } from "@/lib/types";
+import { ToolCategory, ToolDefinition, ToolRuntime, ToolSchemaType } from "@/lib/types";
+
+function createToolDefinition({
+  slug,
+  name,
+  category,
+  schemaType,
+  runtime = "pure-client",
+  targetKeyword,
+  description,
+  primaryPromise,
+  relatedToolSlugs,
+  keywords,
+  articleHeading,
+  coverage,
+  howTo,
+  faqs,
+  featured = false,
+  navLabel,
+  reviewedAt,
+  sourceLabel,
+}: {
+  slug: string;
+  name: string;
+  category: ToolCategory;
+  schemaType: ToolSchemaType;
+  runtime?: ToolRuntime;
+  targetKeyword: string;
+  description: string;
+  primaryPromise: string;
+  relatedToolSlugs: string[];
+  keywords: string[];
+  articleHeading: string;
+  coverage: string[];
+  howTo: string[];
+  faqs: Array<{ question: string; answer: string }>;
+  featured?: boolean;
+  navLabel?: string;
+  reviewedAt?: string;
+  sourceLabel?: string;
+}): ToolDefinition {
+  return {
+    slug,
+    name,
+    category,
+    schemaType,
+    runtime,
+    targetKeyword,
+    description,
+    primaryPromise,
+    relatedToolSlugs,
+    featured,
+    navLabel,
+    reviewedAt,
+    sourceLabel,
+    seoContent: {
+      title: name,
+      metaDescription: description,
+      keywords,
+      h1: name,
+      articleHeading,
+      coverage,
+      intro: [
+        description,
+        `${name} is built for fast mobile use, visible assumptions, and direct result-first decisions.`,
+      ],
+      howTo,
+      faqs,
+    },
+  };
+}
 
 export const toolDefinitions: ToolDefinition[] = [
   {
@@ -6,6 +76,9 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "Take-Home Salary Calculator",
     category: "Finance",
     schemaType: "calculator",
+    runtime: "pure-client",
+    featured: true,
+    navLabel: "Salary",
     targetKeyword: "take home salary calculator india",
     description:
       "Estimate monthly take-home salary with old vs new regime comparison, HRA handling, PF, and professional tax.",
@@ -63,6 +136,9 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "GST Calculator",
     category: "Tax",
     schemaType: "calculator",
+    runtime: "pure-client",
+    featured: true,
+    navLabel: "GST",
     targetKeyword: "gst calculator",
     description:
       "Add or remove GST in seconds, switch slabs, and see CGST/SGST or IGST splits clearly.",
@@ -116,6 +192,9 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "EMI Calculator",
     category: "Finance",
     schemaType: "calculator",
+    runtime: "pure-client",
+    featured: true,
+    navLabel: "EMI",
     targetKeyword: "emi calculator",
     description:
       "Plan monthly loan payments with EMI, total interest, total payout, and amortization snapshots.",
@@ -169,6 +248,9 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "SIP Calculator",
     category: "Finance",
     schemaType: "calculator",
+    runtime: "pure-client",
+    featured: true,
+    navLabel: "SIP",
     targetKeyword: "sip calculator",
     description:
       "Estimate SIP corpus growth with monthly investment, expected return, total invested amount, and wealth gained.",
@@ -222,6 +304,9 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "Income Tax Calculator",
     category: "Tax",
     schemaType: "calculator",
+    runtime: "pure-client",
+    featured: true,
+    navLabel: "Tax",
     targetKeyword: "income tax calculator india",
     description:
       "Compare old vs new regime tax outcomes across financial years with visible deductions, rebates, and take-home impact.",
@@ -279,6 +364,9 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "PPF Calculator",
     category: "Finance",
     schemaType: "calculator",
+    runtime: "pure-client",
+    featured: true,
+    navLabel: "PPF",
     targetKeyword: "ppf calculator",
     description:
       "Estimate PPF maturity value, total contributions, extension scenarios, and long-term tax-free growth.",
@@ -332,6 +420,9 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "FD Calculator",
     category: "Finance",
     schemaType: "calculator",
+    runtime: "pure-client",
+    featured: true,
+    navLabel: "FD",
     targetKeyword: "fd calculator",
     description:
       "Estimate FD maturity amount with compounding choice, total interest earned, and a quick post-tax view.",
@@ -385,6 +476,7 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "Gratuity Calculator",
     category: "Finance",
     schemaType: "calculator",
+    runtime: "pure-client",
     targetKeyword: "gratuity calculator",
     description:
       "Estimate gratuity using Act-covered and non-Act formulas, eligibility checks, and tax-exemption context.",
@@ -433,6 +525,392 @@ export const toolDefinitions: ToolDefinition[] = [
       ],
     },
   },
+  createToolDefinition({
+    slug: "hra-calculator",
+    name: "HRA Calculator",
+    category: "Tax",
+    schemaType: "calculator",
+    targetKeyword: "hra calculator india",
+    description:
+      "Estimate HRA exemption under the old regime by comparing actual HRA, rent paid minus 10% of salary, and city-based salary limits.",
+    primaryPromise:
+      "Enter basic salary, HRA received, and rent paid to see exempt HRA and the binding rule.",
+    relatedToolSlugs: ["salary-calculator", "income-tax-calculator", "rent-receipt-generator"],
+    keywords: ["hra calculator", "hra exemption calculator", "hra calculation old regime"],
+    articleHeading: "How this HRA calculator works",
+    coverage: ["Old-regime HRA exemption", "Binding-rule visibility", "Metro and non-metro handling"],
+    howTo: ["Enter annual basic salary, HRA received, and rent paid.", "Select metro or non-metro city status.", "Check the exempt HRA and the rule that limits it."],
+    faqs: [{ question: "Does HRA exemption work in the new regime?", answer: "In general planning, HRA exemption is mainly relevant in old-regime cases." }],
+  }),
+  createToolDefinition({
+    slug: "number-to-words",
+    name: "Number to Words Converter",
+    category: "Utility",
+    schemaType: "converter",
+    targetKeyword: "number to words indian rupees",
+    description:
+      "Convert numbers into Indian rupee wording with lakh, crore, and paise support for invoices, receipts, and cheques.",
+    primaryPromise:
+      "Enter an amount to convert it into Indian rupee words instantly.",
+    relatedToolSlugs: ["gst-invoice-generator", "rent-receipt-generator", "salary-slip-generator"],
+    keywords: ["number to words", "amount in words", "rupees in words converter"],
+    articleHeading: "When this number-to-words tool helps",
+    coverage: ["Indian numbering system", "Rupee and paise wording", "Document-ready phrasing"],
+    howTo: ["Enter any numeric amount.", "Copy the rupee phrase or whole-number wording for your document."],
+    faqs: [{ question: "Does it support lakh and crore format?", answer: "Yes. The wording follows the Indian numbering pattern." }],
+  }),
+  createToolDefinition({
+    slug: "age-calculator",
+    name: "Age Calculator",
+    category: "Utility",
+    schemaType: "calculator",
+    targetKeyword: "age calculator",
+    description:
+      "Calculate age in years, months, and days with next-birthday countdown and age-on-date support.",
+    primaryPromise:
+      "Enter date of birth to see exact age and next-birthday countdown.",
+    relatedToolSlugs: ["gratuity-calculator", "marriage-biodata-maker", "salary-slip-generator"],
+    keywords: ["age calculator", "date of birth calculator", "how old am i"],
+    articleHeading: "What this age calculator shows",
+    coverage: ["Exact age breakdown", "Next birthday countdown", "Target-date age mode"],
+    howTo: ["Enter date of birth.", "Optionally add a target date.", "Read the exact age breakdown and countdown."],
+    faqs: [{ question: "Can I calculate age on a future exam date?", answer: "Yes. Use the optional target-date field." }],
+  }),
+  createToolDefinition({
+    slug: "percentage-calculator",
+    name: "Percentage Calculator",
+    category: "Utility",
+    schemaType: "calculator",
+    targetKeyword: "percentage calculator",
+    description:
+      "Use one page for percentage of a number, percentage change, marks percentage, and fraction-to-percentage calculations.",
+    primaryPromise:
+      "Switch modes to calculate percentages, changes, marks, and fractions in one place.",
+    relatedToolSlugs: ["simple-interest-calculator", "number-to-words", "salary-calculator"],
+    keywords: ["percentage calculator", "percentage increase calculator", "marks percentage calculator"],
+    articleHeading: "Six percentage modes in one tool",
+    coverage: ["Percentage of a number", "Change and increase", "Marks and fraction conversion"],
+    howTo: ["Pick the required mode.", "Enter the two values.", "Read the result in number or percent form."],
+    faqs: [{ question: "Does it support marks percentage?", answer: "Yes. One mode is dedicated to marks percentage." }],
+  }),
+  createToolDefinition({
+    slug: "simple-interest-calculator",
+    name: "Simple Interest Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "simple interest calculator",
+    description:
+      "Estimate simple interest, total amount, and compare the same scenario against annual compounding.",
+    primaryPromise:
+      "Enter principal, rate, and tenure to calculate simple interest and compare it with compounding.",
+    relatedToolSlugs: ["fd-calculator", "flat-vs-reducing-rate-converter", "emi-calculator"],
+    keywords: ["simple interest calculator", "simple interest formula", "si calculator"],
+    articleHeading: "Simple interest versus compounding",
+    coverage: ["Simple-interest result", "Total amount", "Compound comparison"],
+    howTo: ["Enter principal, annual rate, and years.", "Read simple interest first, then compare the compound amount."],
+    faqs: [{ question: "Does the comparison use annual compounding?", answer: "Yes. The comparison uses annual compounding for a simple benchmark." }],
+  }),
+  createToolDefinition({
+    slug: "flat-vs-reducing-rate-converter",
+    name: "Flat vs Reducing Rate Converter",
+    category: "Finance",
+    schemaType: "converter",
+    targetKeyword: "flat to reducing rate converter",
+    description:
+      "Compare flat-rate and reducing-balance loan costs using approximate equivalent rates, EMI, and total interest.",
+    primaryPromise:
+      "Enter loan amount, rate, and tenure to compare flat and reducing interest cost.",
+    relatedToolSlugs: ["emi-calculator", "simple-interest-calculator", "fuel-cost-calculator"],
+    keywords: ["flat to reducing rate converter", "flat vs reducing calculator", "loan rate converter"],
+    articleHeading: "Why flat-rate loans look cheaper than they are",
+    coverage: ["Approx equivalent-rate conversion", "EMI comparison", "Total-interest delta"],
+    howTo: ["Pick conversion direction.", "Enter loan amount, rate, and tenure.", "Compare EMI and total interest."],
+    faqs: [{ question: "Is the equivalent rate exact?", answer: "No. It is a practical approximation for quick comparison." }],
+  }),
+  createToolDefinition({
+    slug: "land-area-converter",
+    name: "Land Area Converter",
+    category: "Property",
+    schemaType: "converter",
+    targetKeyword: "land area converter india",
+    description:
+      "Convert land area between acre, hectare, bigha, gunta, square feet, and square metres using India-relevant units.",
+    primaryPromise:
+      "Enter a land value and convert between acre, bigha, gunta, square feet, and more.",
+    relatedToolSlugs: ["stamp-duty-calculator", "electricity-bill-calculator", "number-to-words"],
+    keywords: ["land area converter", "bigha to acre", "gunta to square feet"],
+    articleHeading: "India-specific land conversion support",
+    coverage: ["Acre, hectare, bigha, gunta", "Square feet and square metre", "Common equivalent values"],
+    howTo: ["Enter a value.", "Choose source and target units.", "Read the converted value and equivalents."],
+    faqs: [{ question: "Does bigha mean the same everywhere?", answer: "No. Local usage varies, so always verify the local standard before legal decisions." }],
+  }),
+  createToolDefinition({
+    slug: "epf-calculator",
+    name: "EPF Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "epf calculator",
+    description:
+      "Estimate EPF corpus using monthly basic salary, employee and employer contribution rates, years, and annual return.",
+    primaryPromise:
+      "Enter monthly basic pay and years to estimate EPF corpus and contribution split.",
+    relatedToolSlugs: ["salary-calculator", "nps-calculator", "gratuity-calculator"],
+    keywords: ["epf calculator", "provident fund calculator", "epf maturity calculator"],
+    articleHeading: "What this EPF calculator covers",
+    coverage: ["Employee and employer contribution split", "Long-term corpus estimate", "Yearly balance snapshots"],
+    howTo: ["Enter monthly basic pay and contribution rates.", "Choose years and expected annual return.", "Read corpus and yearly balance build-up."],
+    faqs: [{ question: "Does this split EPS separately?", answer: "No. This is a planning estimate and does not model EPS allocation separately." }],
+  }),
+  createToolDefinition({
+    slug: "nps-calculator",
+    name: "NPS Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "nps calculator india",
+    description:
+      "Project NPS corpus, lump-sum withdrawal, annuity allocation, and invested-versus-growth split from a monthly contribution.",
+    primaryPromise:
+      "Enter monthly NPS contribution to estimate corpus, lump sum, and annuity split.",
+    relatedToolSlugs: ["epf-calculator", "ppf-calculator", "swp-calculator"],
+    keywords: ["nps calculator", "nps maturity calculator", "nps corpus calculator"],
+    articleHeading: "How this NPS projection works",
+    coverage: ["Monthly contribution model", "Corpus and annuity split", "Invested amount vs wealth gained"],
+    howTo: ["Enter monthly contribution, years, return, and annuity share.", "Check total corpus, lump sum, and annuity corpus."],
+    faqs: [{ question: "Does this tool decide the legal withdrawal ratio?", answer: "No. It models the annuity share you choose for planning." }],
+  }),
+  createToolDefinition({
+    slug: "lump-sum-calculator",
+    name: "Lump Sum Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "lump sum calculator",
+    description:
+      "Estimate one-time investment maturity value, wealth gained, and compare the same capital against a SIP-style staggered plan.",
+    primaryPromise:
+      "Enter a one-time amount, return, and years to estimate maturity and compare with SIP-style investing.",
+    relatedToolSlugs: ["sip-calculator", "cagr-calculator", "fd-calculator"],
+    keywords: ["lump sum calculator", "one time investment calculator", "lump sum vs sip"],
+    articleHeading: "When lump-sum planning is useful",
+    coverage: ["One-time maturity estimate", "Wealth-gain split", "SIP-style comparison"],
+    howTo: ["Enter amount, annual return, and years.", "Review maturity value and the SIP comparison."],
+    faqs: [{ question: "Is the SIP comparison exact?", answer: "No. It is a planning comparison using the same total capital spread over time." }],
+  }),
+  createToolDefinition({
+    slug: "cagr-calculator",
+    name: "CAGR Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "cagr calculator",
+    description:
+      "Calculate CAGR from starting value, ending value, and years, with a reverse target mode for growth planning.",
+    primaryPromise:
+      "Enter starting value, ending value, and years to calculate CAGR and reverse target values.",
+    relatedToolSlugs: ["lump-sum-calculator", "sip-calculator", "fd-calculator"],
+    keywords: ["cagr calculator", "compound annual growth rate calculator", "cagr formula"],
+    articleHeading: "What CAGR does and does not show",
+    coverage: ["Annualized growth rate", "Reverse target mode", "Return smoothing explanation"],
+    howTo: ["Enter initial value, final value, and years.", "Use the reverse target field to project future value at a target CAGR."],
+    faqs: [{ question: "Does CAGR show volatility?", answer: "No. It compresses the path into a single annualized rate." }],
+  }),
+  createToolDefinition({
+    slug: "swp-calculator",
+    name: "SWP Calculator",
+    category: "Finance",
+    schemaType: "calculator",
+    targetKeyword: "swp calculator",
+    description:
+      "Estimate how long a corpus can support a monthly withdrawal using expected return and optional inflation on withdrawals.",
+    primaryPromise:
+      "Enter corpus, withdrawal, and return to see how long the money may last.",
+    relatedToolSlugs: ["nps-calculator", "lump-sum-calculator", "sip-calculator"],
+    keywords: ["swp calculator", "systematic withdrawal plan calculator", "corpus depletion calculator"],
+    articleHeading: "How this SWP estimate works",
+    coverage: ["Corpus life estimate", "Inflation-adjusted withdrawals", "Depletion trend"],
+    howTo: ["Enter corpus, monthly withdrawal, return, and optional inflation.", "Check years lasted and the depletion trend."],
+    faqs: [{ question: "Can real returns change the result a lot?", answer: "Yes. Sequence of returns can materially change SWP sustainability." }],
+  }),
+  createToolDefinition({
+    slug: "amazon-seller-fee-calculator",
+    name: "Amazon Seller Fee Calculator",
+    category: "Commerce",
+    schemaType: "calculator",
+    runtime: "static-data",
+    targetKeyword: "amazon seller fee calculator india",
+    description:
+      "Estimate Amazon marketplace fees, shipping charges, and seller proceeds using category, fulfilment mode, and shipping band.",
+    primaryPromise:
+      "Enter selling price and fulfilment details to estimate Amazon fees and net proceeds.",
+    relatedToolSlugs: ["flipkart-seller-fee-calculator", "gst-calculator", "number-to-words"],
+    keywords: ["amazon seller fee calculator", "amazon fba fee calculator india", "amazon seller charges"],
+    articleHeading: "What this Amazon fee estimator covers",
+    coverage: ["Category-based referral fee estimate", "Closing fee and shipping cost", "Net proceeds after fees"],
+    howTo: ["Enter selling price.", "Choose category, fulfilment mode, and shipping band.", "Check total fees and net proceeds."],
+    faqs: [{ question: "Are these live Amazon fees?", answer: "No. This uses a reviewed static planning dataset and should be verified against the latest fee card." }],
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Reviewed static marketplace fee dataset",
+  }),
+  createToolDefinition({
+    slug: "flipkart-seller-fee-calculator",
+    name: "Flipkart Seller Fee Calculator",
+    category: "Commerce",
+    schemaType: "calculator",
+    runtime: "static-data",
+    targetKeyword: "flipkart seller fee calculator india",
+    description:
+      "Estimate Flipkart seller fees, shipping charges, and net proceeds using category, fulfilment mode, and shipping band.",
+    primaryPromise:
+      "Enter selling price and fulfilment details to estimate Flipkart fees and seller proceeds.",
+    relatedToolSlugs: ["amazon-seller-fee-calculator", "gst-calculator", "number-to-words"],
+    keywords: ["flipkart seller fee calculator", "flipkart seller charges", "flipkart fee calculator"],
+    articleHeading: "What this Flipkart fee estimator covers",
+    coverage: ["Category-based referral fee estimate", "Closing fee and shipping cost", "Net proceeds after fees"],
+    howTo: ["Enter selling price.", "Choose category, fulfilment mode, and shipping band.", "Check fee breakdown and net proceeds."],
+    faqs: [{ question: "Does this include ads, returns, and GST on fees?", answer: "No. It focuses on a simplified static fee estimate for quick pricing checks." }],
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Reviewed static marketplace fee dataset",
+  }),
+  createToolDefinition({
+    slug: "upi-qr-generator",
+    name: "UPI QR Generator",
+    category: "Payments",
+    schemaType: "generator",
+    targetKeyword: "upi qr code generator",
+    description:
+      "Generate a UPI QR code with payee name, UPI ID, amount, note, and PNG download support without login.",
+    primaryPromise:
+      "Enter payee details to generate a downloadable UPI QR code instantly.",
+    relatedToolSlugs: ["number-to-words", "gst-invoice-generator", "rent-receipt-generator"],
+    keywords: ["upi qr generator", "upi qr code generator", "upi qr png download"],
+    articleHeading: "What this UPI QR generator creates",
+    coverage: ["UPI payment URI", "Optional fixed amount and note", "PNG download"],
+    howTo: ["Enter payee name and UPI ID.", "Add amount or note if needed.", "Download the QR as a PNG."],
+    faqs: [{ question: "Does this store my UPI details?", answer: "No. The QR is generated locally in the browser." }],
+  }),
+  createToolDefinition({
+    slug: "fuel-cost-calculator",
+    name: "Fuel Cost Calculator",
+    category: "Utility",
+    schemaType: "calculator",
+    targetKeyword: "fuel cost calculator india",
+    description:
+      "Estimate fuel cost for one-way or round-trip travel using distance, mileage, fuel price, and optional toll costs.",
+    primaryPromise:
+      "Enter distance, mileage, and fuel price to estimate trip cost.",
+    relatedToolSlugs: ["emi-calculator", "electricity-bill-calculator", "number-to-words"],
+    keywords: ["fuel cost calculator", "trip fuel calculator", "petrol cost calculator"],
+    articleHeading: "How this trip-cost estimate works",
+    coverage: ["Fuel-only estimate", "Toll and parking support", "Round-trip toggle"],
+    howTo: ["Enter distance, mileage, and fuel price.", "Add tolls or switch on round trip if needed.", "Read total trip cost."],
+    faqs: [{ question: "Does this fetch live fuel prices?", answer: "No. Enter the current price you want to model." }],
+  }),
+  createToolDefinition({
+    slug: "stamp-duty-calculator",
+    name: "Stamp Duty Calculator",
+    category: "Property",
+    schemaType: "calculator",
+    runtime: "static-data",
+    targetKeyword: "stamp duty calculator india",
+    description:
+      "Estimate stamp duty, registration fees, and total upfront property charges for supported Indian states and buyer profiles.",
+    primaryPromise:
+      "Enter property value and buyer profile to estimate stamp duty and registration charges.",
+    relatedToolSlugs: ["land-area-converter", "electricity-bill-calculator", "gst-calculator"],
+    keywords: ["stamp duty calculator", "property registration charges calculator", "stamp duty india"],
+    articleHeading: "What this stamp-duty estimator covers",
+    coverage: ["State-wise simplified rates", "Buyer-profile handling", "Total upfront charge estimate"],
+    howTo: ["Choose a supported state and buyer profile.", "Enter the property value.", "Read stamp duty, registration, and total upfront cost."],
+    faqs: [{ question: "Are cess and concession rules included?", answer: "No. This uses a simplified reviewed rate table and excludes many state-specific extras." }],
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Reviewed static property-charge dataset",
+  }),
+  createToolDefinition({
+    slug: "electricity-bill-calculator",
+    name: "Electricity Bill Calculator",
+    category: "Utility",
+    schemaType: "calculator",
+    runtime: "static-data",
+    targetKeyword: "electricity bill calculator india",
+    description:
+      "Estimate slab-based electricity charges for supported Indian states and consumer types using a reviewed static rate table.",
+    primaryPromise:
+      "Enter state, consumer type, and units to estimate the electricity bill.",
+    relatedToolSlugs: ["fuel-cost-calculator", "land-area-converter", "number-to-words"],
+    keywords: ["electricity bill calculator", "power bill calculator india", "units to bill calculator"],
+    articleHeading: "What this electricity estimate includes",
+    coverage: ["Supported-state slab model", "Domestic and commercial support", "Slab-wise breakdown"],
+    howTo: ["Choose state and consumer type.", "Enter units consumed.", "Read bill estimate and slab breakdown."],
+    faqs: [{ question: "Does this include subsidies and fixed charges?", answer: "No. This is an energy-charge estimate only." }],
+    reviewedAt: "2026-03-08",
+    sourceLabel: "Reviewed static electricity-rate dataset",
+  }),
+  createToolDefinition({
+    slug: "rent-receipt-generator",
+    name: "Rent Receipt Generator",
+    category: "Generator",
+    schemaType: "generator",
+    targetKeyword: "rent receipt generator",
+    description:
+      "Generate one or multiple monthly rent receipts for HRA documentation with landlord, tenant, address, payment mode, and PDF download.",
+    primaryPromise:
+      "Enter rent details to generate a printable rent-receipt set instantly.",
+    relatedToolSlugs: ["hra-calculator", "salary-calculator", "number-to-words"],
+    keywords: ["rent receipt generator", "rent receipt for hra", "rent receipt pdf"],
+    articleHeading: "What this rent-receipt generator creates",
+    coverage: ["Multi-month receipt set", "Landlord PAN support", "Printable PDF export"],
+    howTo: ["Enter names, address, monthly rent, and month range.", "Preview the full receipt set.", "Download the PDF."],
+    faqs: [{ question: "Can I generate receipts for multiple months?", answer: "Yes. The generator creates a receipt set for the full selected month range." }],
+  }),
+  createToolDefinition({
+    slug: "marriage-biodata-maker",
+    name: "Marriage Biodata Maker",
+    category: "Generator",
+    schemaType: "generator",
+    targetKeyword: "marriage biodata maker",
+    description:
+      "Create a simple one-page marriage biodata with photo, profile details, family summary, and PDF download.",
+    primaryPromise:
+      "Fill the profile and download a clean marriage biodata PDF without signup.",
+    relatedToolSlugs: ["age-calculator", "number-to-words", "salary-slip-generator"],
+    keywords: ["marriage biodata maker", "biodata for marriage pdf", "marriage profile generator"],
+    articleHeading: "What this biodata maker includes",
+    coverage: ["One-page biodata layout", "Photo support", "PDF export"],
+    howTo: ["Fill name, age, education, profession, and summary sections.", "Add an optional photo.", "Preview and download the biodata PDF."],
+    faqs: [{ question: "Does this store the biodata online?", answer: "No. The biodata is created locally in your browser." }],
+  }),
+  createToolDefinition({
+    slug: "salary-slip-generator",
+    name: "Salary Slip Generator",
+    category: "Generator",
+    schemaType: "generator",
+    targetKeyword: "salary slip generator india",
+    description:
+      "Generate a printable salary slip with company details, employee details, earnings, deductions, net pay, and PDF download.",
+    primaryPromise:
+      "Enter company, employee, earnings, and deductions to create a salary slip PDF.",
+    relatedToolSlugs: ["salary-calculator", "hra-calculator", "income-tax-calculator"],
+    keywords: ["salary slip generator", "payslip generator", "salary slip pdf india"],
+    articleHeading: "What this salary-slip generator covers",
+    coverage: ["Earnings and deductions", "Logo upload", "Printable net-pay summary"],
+    howTo: ["Enter company and employee details.", "Add earnings and deductions.", "Preview the salary slip and download the PDF."],
+    faqs: [{ question: "Can I upload a logo?", answer: "Yes. The generator supports an optional company-logo upload." }],
+  }),
+  createToolDefinition({
+    slug: "gst-invoice-generator",
+    name: "GST Invoice Generator",
+    category: "Generator",
+    schemaType: "generator",
+    targetKeyword: "gst invoice generator",
+    description:
+      "Generate a printable GST invoice with seller and buyer details, item rows, GST rates, state-based tax split, and PDF download.",
+    primaryPromise:
+      "Enter seller, buyer, and item details to create a GST invoice without login.",
+    relatedToolSlugs: ["gst-calculator", "number-to-words", "upi-qr-generator"],
+    keywords: ["gst invoice generator", "gst bill maker", "gst invoice pdf"],
+    articleHeading: "What this GST invoice generator creates",
+    coverage: ["Seller and buyer details", "Item rows with GST", "CGST/SGST vs IGST split"],
+    howTo: ["Enter seller and buyer details.", "Fill item rows and GST rates.", "Preview the invoice and download the PDF."],
+    faqs: [{ question: "Does it choose CGST/SGST vs IGST automatically?", answer: "Yes. The preview switches based on seller and buyer state comparison." }],
+  }),
 ];
 
 export const toolDefinitionsBySlug = Object.fromEntries(
@@ -447,9 +925,16 @@ export function getRelatedTools(slugs: string[]) {
   return slugs.map((slug) => toolDefinitionsBySlug[slug]).filter(Boolean);
 }
 
-const categoryOrder = ["Finance", "Tax"] as const;
+const categoryOrder: ToolDefinition["category"][] = [
+  "Finance",
+  "Tax",
+  "Commerce",
+  "Payments",
+  "Property",
+  "Generator",
+  "Utility",
+];
 
-export const toolDefinitionsByCategory = categoryOrder.map((category) => [
-  category,
-  toolDefinitions.filter((tool) => tool.category === category),
-]) as Array<[ToolDefinition["category"], ToolDefinition[]]>;
+export const toolDefinitionsByCategory = categoryOrder
+  .map((category) => [category, toolDefinitions.filter((tool) => tool.category === category)] as [ToolDefinition["category"], ToolDefinition[]])
+  .filter(([, tools]) => tools.length > 0);

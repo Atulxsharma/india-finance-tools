@@ -51,6 +51,166 @@ export function NumberField({
   );
 }
 
+export function TextField({
+  id,
+  label,
+  value,
+  placeholder,
+  onChange,
+  hint,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  placeholder?: string;
+  onChange: (value: string) => void;
+  hint?: string;
+}) {
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      <input
+        id={id}
+        placeholder={placeholder}
+        type="text"
+        value={value}
+        onChange={(event) => {
+          markCalculatorEngagement();
+          onChange(event.target.value);
+        }}
+      />
+      {hint ? <small>{hint}</small> : null}
+    </div>
+  );
+}
+
+export function TextAreaField({
+  id,
+  label,
+  value,
+  placeholder,
+  rows = 4,
+  onChange,
+  hint,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  placeholder?: string;
+  rows?: number;
+  onChange: (value: string) => void;
+  hint?: string;
+}) {
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      <textarea
+        id={id}
+        placeholder={placeholder}
+        rows={rows}
+        value={value}
+        onChange={(event) => {
+          markCalculatorEngagement();
+          onChange(event.target.value);
+        }}
+      />
+      {hint ? <small>{hint}</small> : null}
+    </div>
+  );
+}
+
+export function DateField({
+  id,
+  label,
+  value,
+  onChange,
+  hint,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  hint?: string;
+}) {
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      <input
+        id={id}
+        type="date"
+        value={value}
+        onChange={(event) => {
+          markCalculatorEngagement();
+          onChange(event.target.value);
+        }}
+      />
+      {hint ? <small>{hint}</small> : null}
+    </div>
+  );
+}
+
+export function FileField({
+  id,
+  label,
+  accept,
+  onChange,
+  hint,
+}: {
+  id: string;
+  label: string;
+  accept?: string;
+  onChange: (file: File | null) => void;
+  hint?: string;
+}) {
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      <input
+        accept={accept}
+        id={id}
+        type="file"
+        onChange={(event) => {
+          markCalculatorEngagement();
+          onChange(event.target.files?.[0] ?? null);
+        }}
+      />
+      {hint ? <small>{hint}</small> : null}
+    </div>
+  );
+}
+
+export function ToggleField({
+  id,
+  label,
+  checked,
+  onChange,
+  hint,
+}: {
+  id: string;
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  hint?: string;
+}) {
+  return (
+    <label className="toggle-field" htmlFor={id}>
+      <input
+        checked={checked}
+        id={id}
+        type="checkbox"
+        onChange={(event) => {
+          markCalculatorEngagement();
+          onChange(event.target.checked);
+        }}
+      />
+      <span>
+        <strong>{label}</strong>
+        {hint ? <small>{hint}</small> : null}
+      </span>
+    </label>
+  );
+}
+
 export function QuickPicks({
   label,
   options,
@@ -273,6 +433,86 @@ export function DistributionBar({
         ))}
       </div>
     </section>
+  );
+}
+
+export function ResultNotice({
+  tone = "warning",
+  children,
+}: {
+  tone?: "warning" | "info" | "success";
+  children: React.ReactNode;
+}) {
+  return <p className={`inline-notice inline-notice-${tone}`}>{children}</p>;
+}
+
+export function InlinePreviewCard({
+  title,
+  subtitle,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="detail-card card preview-card">
+      <div className="section-heading">
+        <h3>{title}</h3>
+        {subtitle ? <p className="muted">{subtitle}</p> : null}
+      </div>
+      <div className="preview-card-body">{children}</div>
+    </section>
+  );
+}
+
+export async function exportNodeAsPdf({
+  node,
+  filename,
+}: {
+  node: HTMLElement;
+  filename: string;
+}) {
+  const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+    import("html2canvas"),
+    import("jspdf"),
+  ]);
+  const canvas = await html2canvas(node, {
+    backgroundColor: "#ffffff",
+    scale: 2,
+  });
+  const imageData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF({
+    orientation: canvas.width > canvas.height ? "landscape" : "portrait",
+    unit: "px",
+    format: [canvas.width, canvas.height],
+  });
+
+  pdf.addImage(imageData, "PNG", 0, 0, canvas.width, canvas.height);
+  pdf.save(filename);
+}
+
+export function DownloadButton({
+  label,
+  onDownload,
+  disabled = false,
+}: {
+  label: string;
+  onDownload: () => Promise<void> | void | null;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      className="button button-primary"
+      disabled={disabled}
+      type="button"
+      onClick={() => {
+        markCalculatorEngagement();
+        void onDownload();
+      }}
+    >
+      {label}
+    </button>
   );
 }
 

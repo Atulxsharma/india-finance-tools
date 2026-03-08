@@ -2,27 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AdUnit } from "@/components/AdUnit";
 import { ToolLayout } from "@/components/ToolLayout";
-import { EmiCalculator } from "@/components/tools/EmiCalculator";
-import { FdCalculator } from "@/components/tools/FdCalculator";
-import { GstCalculator } from "@/components/tools/GstCalculator";
-import { GratuityCalculator } from "@/components/tools/GratuityCalculator";
-import { IncomeTaxCalculator } from "@/components/tools/IncomeTaxCalculator";
-import { PpfCalculator } from "@/components/tools/PpfCalculator";
-import { SalaryCalculator } from "@/components/tools/SalaryCalculator";
-import { SipCalculator } from "@/components/tools/SipCalculator";
+import { toolComponentRegistry } from "@/components/tools/registry";
 import { siteConfig } from "@/lib/site";
 import { getToolDefinition, toolDefinitions } from "@/lib/tools";
-
-const toolComponents = {
-  "salary-calculator": SalaryCalculator,
-  "gst-calculator": GstCalculator,
-  "emi-calculator": EmiCalculator,
-  "sip-calculator": SipCalculator,
-  "income-tax-calculator": IncomeTaxCalculator,
-  "ppf-calculator": PpfCalculator,
-  "fd-calculator": FdCalculator,
-  "gratuity-calculator": GratuityCalculator,
-} as const;
 
 type ToolPageParams = {
   params: Promise<{ slug: string }>;
@@ -68,7 +50,11 @@ export default async function ToolPage({ params }: ToolPageParams) {
     notFound();
   }
 
-  const Calculator = toolComponents[slug as keyof typeof toolComponents];
+  const Calculator = toolComponentRegistry[slug as keyof typeof toolComponentRegistry];
+
+  if (!Calculator) {
+    notFound();
+  }
 
   return (
     <div className="tool-page">

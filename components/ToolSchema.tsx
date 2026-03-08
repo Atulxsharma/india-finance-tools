@@ -9,7 +9,19 @@ function getApplicationCategory(tool: ToolDefinition) {
       return "BusinessApplication";
     case "calculator":
     default:
-      return tool.category === "Tax" ? "FinanceApplication" : "FinanceApplication";
+      if (tool.category === "Tax") {
+        return "FinanceApplication";
+      }
+
+      if (tool.category === "Utility" || tool.category === "Payments") {
+        return "UtilitiesApplication";
+      }
+
+      if (tool.category === "Commerce" || tool.category === "Property") {
+        return "BusinessApplication";
+      }
+
+      return "FinanceApplication";
   }
 }
 
